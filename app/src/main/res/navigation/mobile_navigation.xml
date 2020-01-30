@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_propiedades">
+
+    <fragment
+        android:id="@+id/navigation_propiedades"
+        android:name="com.example.propiedadesguitarra2.ui.propiedades.PropiedadesFragment"
+        android:label="@string/title_propiedades"
+        tools:layout="@layout/fragment_propiedades" />
+
+    <fragment
+        android:id="@+id/navigation_configuraciones"
+        android:name="com.example.propiedadesguitarra2.ui.configuraciones.ConfiguracionesFragment"
+        android:label="@string/title_configuraciones"
+        tools:layout="@layout/fragment_configuraciones" />
+
+    <fragment
+        android:id="@+id/navigation_cargar_guardar"
+        android:name="com.example.propiedadesguitarra2.ui.cargarguardar.CargarGuardarFragment"
+        android:label="@string/title_guardar"
+        tools:layout="@layout/fragment_cargar_guardar" />
+</navigation>

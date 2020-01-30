@@ -1,4 +1,4 @@
-package com.example.propiedadesguitarra;
+package com.example.propiedadesguitarra2;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.example.propiedadesguitarra", appContext.getPackageName());
+        assertEquals("com.example.propiedadesguitarra2", appContext.getPackageName());
     }
 }

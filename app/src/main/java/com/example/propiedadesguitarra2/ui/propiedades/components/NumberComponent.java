@@ -1,4 +1,4 @@
-package com.example.propiedadesguitarra.components;
+package com.example.propiedadesguitarra2.ui.propiedades.components;
 
 import android.text.Editable;
 import android.text.TextWatcher;

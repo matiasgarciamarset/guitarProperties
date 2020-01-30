@@ -1,65 +1,63 @@
-package com.example.propiedadesguitarra;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.propiedadesguitarra2.ui.cargarguardar;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.NumberPicker;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.propiedadesguitarra.components.NumberComponent;
+import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.propiedadesguitarra2.R;
+import com.example.propiedadesguitarra2.StateManager;
 
+public class CargarGuardarFragment extends Fragment {
+
+    private CargarGuardarViewModel cargarGuardarViewModel;
     private StateManager stateManager;
-    private NumberComponent friccionPorCuerda;
-    private Spinner cuerda;
-
     private Spinner guardados;
     private EditText guardarText;
     private Button guardar;
     private Button eliminar;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        cargarGuardarViewModel =
+                ViewModelProviders.of(this).get(CargarGuardarViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_cargar_guardar, container, false);
 
-        stateManager = new StateManager(this);
+        stateManager = StateManager.get(this.getContext());
 
-        cuerda = (Spinner) findViewById(R.id.cuerdaSpi);
-        cuerda.setSelection(0, true);
+        return root;
+    }
 
-        // Creo botones para friccion
-        this.friccionPorCuerda = new NumberComponent(
-                (EditText) findViewById(R.id.friccNum),
-                (NumberPicker) findViewById(R.id.friccDec),
-                (SeekBar) findViewById(R.id.friccBar),
-                (TextView) findViewById(R.id.friccView),
-                '|');
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         // Cargo archivos guardados
-        guardados = (Spinner) findViewById(R.id.guardadosSpin);
-        guardarText = (EditText) findViewById(R.id.guardarText);
-        guardar = (Button) findViewById(R.id.guardar);
-        eliminar = (Button) findViewById(R.id.eliminar);
-        updateGuardadosSpinner(this);
-        guardarText.setText(stateManager.currentFile(this));
+        guardados = (Spinner) getView().findViewById(R.id.guardadosSpin);
+        guardarText = (EditText) getView().findViewById(R.id.guardarText);
+        guardar = (Button) getView().findViewById(R.id.guardar);
+        eliminar = (Button) getView().findViewById(R.id.eliminar);
+        updateGuardadosSpinner(this.getContext());
+        guardarText.setText(stateManager.currentFile(this.getContext()));
 
         guardados.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 stateManager.read(parent.getItemAtPosition(position).toString(), view.getContext());
-                updateAll();
                 guardarText.setText(parent.getItemAtPosition(position).toString());
             }
 
@@ -78,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                     switch (which){
                         case DialogInterface.BUTTON_POSITIVE:
                             updateGuardadosSpinner(v.getContext());
-                            updateAll();
                             guardarText.setText(stateManager.currentFile(v.getContext()));
                             break;
                         case DialogInterface.BUTTON_NEGATIVE:
@@ -91,26 +88,6 @@ public class MainActivity extends AppCompatActivity {
                         .setNegativeButton("No", dialogClickListener).show();
             }
         });
-
-
-        // COnfiguro variables
-
-        friccionPorCuerda.onChange((coef, exp) ->
-                stateManager.state.cuerdas.get(Integer.parseInt(cuerda.getSelectedItem().toString()))
-                        .put("friccion", coef + "|" + exp));
-
-        updateAll();
-
-        cuerda.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                friccionPorCuerda.update(
-                        stateManager.state.cuerdas.get(Integer.parseInt(parent.getItemAtPosition(position).toString())).get("friccion"));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
     }
 
     private void updateGuardadosSpinner(Context context) {
@@ -119,10 +96,4 @@ public class MainActivity extends AppCompatActivity {
         guardados.setAdapter(arrayAdapter1);
         guardados.setSelection(arrayAdapter1.getPosition(stateManager.currentFile(context)));
     }
-
-    private void updateAll() {
-        friccionPorCuerda.update(
-                stateManager.state.cuerdas.get(Integer.parseInt(cuerda.getSelectedItem().toString())).get("friccion"));
-    }
-
 }

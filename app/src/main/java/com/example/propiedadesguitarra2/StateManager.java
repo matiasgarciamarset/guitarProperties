@@ -1,11 +1,9 @@
-package com.example.propiedadesguitarra;
+package com.example.propiedadesguitarra2;
 
-import android.app.Application;
 import android.content.Context;
 
-import com.example.propiedadesguitarra.model.State;
+import com.example.propiedadesguitarra2.model.State;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -19,7 +17,15 @@ public class StateManager {
 
     private String currentFile;
 
-    public StateManager(Context context) {
+    private static StateManager stateManager = null;
+
+    public static StateManager get(Context context) {
+        if (stateManager == null)
+            stateManager = new StateManager(context);
+        return stateManager;
+    }
+
+    private StateManager(Context context) {
         if (fileList(context).length == 0) {
             save("default", context);
         } else {
@@ -67,10 +73,13 @@ public class StateManager {
         if (files.length <= 1) {
             return false;
         }
-        String other = Arrays.stream(files)
-                .filter(name -> !name.equals(fileName))
-                .findAny()
-                .get();
+        String other = null;
+        for (String file : files) {
+            if (!file.equals(fileName)) {
+                other = file;
+                break;
+            }
+        }
         read(other, context);
         return context.deleteFile(fileName);
     }

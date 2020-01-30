@@ -1,4 +1,4 @@
-package com.example.propiedadesguitarra;
+package com.example.propiedadesguitarra2;
 
 import org.junit.Test;
 

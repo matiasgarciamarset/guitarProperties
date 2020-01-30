@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">Propiedades Guitarra</string>
+    <string name="app_name">PropiedadesGuitarra2</string>
+    <string name="title_propiedades">Propiedades</string>
+    <string name="title_configuraciones">Configuraciones</string>
+    <string name="title_guardar">Cargar/Guardar</string>
 
     <string name="cuerda_seleccion_title">Seleccione la cuerda</string>
 
