@@ -2,12 +2,16 @@ package com.example.propiedadesguitarra2.ui.propiedades.components;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.function.BiConsumer;
+
+import static com.example.propiedadesguitarra2.StateManager.convertToNumbers;
+import static com.example.propiedadesguitarra2.StateManager.prettyPrint;
 
 public class NumberComponent {
     private EditText numeroEditBox;
@@ -16,14 +20,12 @@ public class NumberComponent {
     private TextView numeroYexponenteTextView;
 
     private BiConsumer<Double, Integer> onChange = null;
-    private char separator;
 
-    public NumberComponent(EditText numeroEditBox, NumberPicker exponentNumberPicker, SeekBar numeroBar, TextView vista, char separator) {
+    public NumberComponent(EditText numeroEditBox, NumberPicker exponentNumberPicker, SeekBar numeroBar, TextView vista) {
         this.numeroEditBox = numeroEditBox;
         this.exponenteNumberPicker = exponentNumberPicker;
         this.numeroBar = numeroBar;
         this.numeroYexponenteTextView = vista;
-        this.separator = separator;
 
 
         exponenteNumberPicker.setWrapSelectorWheel(true);
@@ -45,7 +47,8 @@ public class NumberComponent {
             @Override
             public void afterTextChanged(Editable s) {
                 display(NumberComponent.this.numeroEditBox, exponenteNumberPicker);
-                if (onChange != null && NumberComponent.this.numeroEditBox.getText().length() > 0)
+                if (onChange != null && NumberComponent.this.numeroEditBox.getText().length() > 0 &&
+                        !NumberComponent.this.numeroEditBox.getText().equals("-"))
                     onChange.accept(Double.parseDouble(NumberComponent.this.numeroEditBox.getText().toString()), exponenteNumberPicker.getValue() - 20);
             }
         });
@@ -60,7 +63,7 @@ public class NumberComponent {
         });
 
         this.numeroBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            private Double value;
+            private Integer value;
             private int prev_value = 500;
 
             @Override
@@ -72,7 +75,7 @@ public class NumberComponent {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                value = Double.parseDouble(NumberComponent.this.numeroEditBox.getText().toString());
+                value = Integer.parseInt(NumberComponent.this.numeroEditBox.getText().toString());
             }
 
             @Override
@@ -85,9 +88,9 @@ public class NumberComponent {
     }
 
     public void update(String value) {
-        int sp_pos = value.indexOf(separator);
-        numeroEditBox.setText(value.substring(0, sp_pos));
-        exponenteNumberPicker.setValue(Integer.valueOf(value.substring(sp_pos+1))+20);
+        Pair<Double, Integer> parsed = convertToNumbers(value);
+        numeroEditBox.setText(parsed.first.toString().split("\\.")[0]); // Elimino el punto del Double
+        exponenteNumberPicker.setValue(parsed.second + 20);
         numeroYexponenteTextView.setText("");
     }
 
@@ -95,16 +98,7 @@ public class NumberComponent {
         if (friccNum.getText()!= null && friccNum.getText().length() > 0) {
             Double value = Double.parseDouble(friccNum.getText().toString());
             int dec = friccDec.getValue() - 20;
-
-            String ceros = "";
-            if (dec < 0) {
-                dec *= -1;
-                for (int i=0; i<dec; i++) ceros += "0";
-                numeroYexponenteTextView.setText( "0," + ceros + value.toString());
-            } else {
-                for (int i=0; i<dec; i++) ceros += "0";
-                numeroYexponenteTextView.setText(value.toString() + ceros);
-            }
+            numeroYexponenteTextView.setText(prettyPrint(value, dec));
         }
     }
 }

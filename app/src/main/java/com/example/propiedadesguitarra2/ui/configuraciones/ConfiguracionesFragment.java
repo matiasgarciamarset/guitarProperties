@@ -37,6 +37,7 @@ public class ConfiguracionesFragment extends Fragment {
     private EditText dedoSizeText;
     private EditText softrealtimeRefreshText;
     private Switch debugModeSwitch;
+    private Switch imprimirSwitch;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class ConfiguracionesFragment extends Fragment {
         dedoSizeText = (EditText) getView().findViewById(R.id.dedoSizeText);
         softrealtimeRefreshText = (EditText) getView().findViewById(R.id.softrealtimeRefreshText);
         debugModeSwitch = (Switch) getView().findViewById(R.id.debugModeSwitch);
+        imprimirSwitch = (Switch) getView().findViewById(R.id.imprimirSwitch);
 
         // Cargo cambios
         nFramesText.setText(stateManager.state.nFrames.toString());
@@ -70,6 +72,7 @@ public class ConfiguracionesFragment extends Fragment {
         dedoSizeText.setText(stateManager.state.dedoSize.toString());
         softrealtimeRefreshText.setText(stateManager.state.softrealtimeRefresh.toString());
         debugModeSwitch.setChecked(stateManager.state.debugMode);
+        imprimirSwitch.setChecked(stateManager.state.imprimir);
 
         // Guardo cambios en State
         // Como estas variables se aplican solo despues de reiniciar, no se envian al dispositivo hasta que se guarda y luego reinicia
@@ -81,6 +84,7 @@ public class ConfiguracionesFragment extends Fragment {
         dedoSizeText.addTextChangedListener(changeText(v -> stateManager.state.dedoSize =  Integer.parseInt(v)));
         softrealtimeRefreshText.addTextChangedListener(changeText(v -> stateManager.state.softrealtimeRefresh = Integer.parseInt(v)));
         debugModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.debugMode = isChecked);
+        imprimirSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.imprimir = isChecked);
     }
 
     private TextWatcher changeText(Consumer<String> method) {

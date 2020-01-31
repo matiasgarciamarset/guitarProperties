@@ -1,6 +1,7 @@
 package com.example.propiedadesguitarra2;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.example.propiedadesguitarra2.model.State;
 
@@ -8,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 
 
 public class StateManager {
@@ -16,6 +16,8 @@ public class StateManager {
     public State state = new State();
 
     private String currentFile;
+
+    private static final char SEPARATOR = '|';
 
     private static StateManager stateManager = null;
 
@@ -82,5 +84,37 @@ public class StateManager {
         }
         read(other, context);
         return context.deleteFile(fileName);
+    }
+
+    // Toma valor con formato "coef" o "coef|exp". Ejemplo "3" o "70|-2"
+    public static Pair<Double, Integer> convertToNumbers(String formatedValue) {
+        int sp_pos = formatedValue.indexOf(SEPARATOR);
+        if (sp_pos == -1) {
+            return Pair.create(Double.parseDouble(formatedValue), 0);
+        }
+        Double coef = Double.parseDouble(formatedValue.substring(0, sp_pos));
+        Integer exp = Integer.parseInt(formatedValue.substring(sp_pos+1));
+        return Pair.create(coef, exp);
+    }
+
+    public static String prettyPrint(String value) {
+        Pair<Double, Integer> valueP = convertToNumbers(value);
+        return prettyPrint(valueP.first, valueP.second);
+    }
+
+    public static String prettyPrint(Double coef, Integer exp) {
+        Double result = coef * Math.pow(10, exp);
+
+        return truncate(String.format("%.10f",result), exp);
+    }
+
+    // Crea la codificacion usada para persistir
+    public static String parseToString(Double coef, Integer exp) {
+        return exp == 0 ? truncate(coef.toString(), 0) : truncate(coef.toString(), 0) + SEPARATOR + exp.toString();
+    }
+
+    private static String truncate(String number, Integer exp) {
+        String[] parts = number.split("\\.");
+        return (parts.length < 2 || exp >= 0) ? parts[0] : parts[0].concat("."+parts[1].substring(0, Math.min(exp*-1, parts[1].length())));
     }
 }
