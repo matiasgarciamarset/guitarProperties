@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_propiedades">
+    app:startDestination="@+id/navigation_propiedades_cuerda">
 
     <fragment
-        android:id="@+id/navigation_propiedades"
-        android:name="com.example.propiedadesguitarra2.ui.propiedades.PropiedadesFragment"
-        android:label="@string/title_propiedades"
-        tools:layout="@layout/fragment_propiedades" />
+        android:id="@+id/navigation_propiedades_cuerda"
+        android:name="com.example.propiedadesguitarra2.ui.propiedadescuerda.PropiedadesCuerdaFragment"
+        android:label="@string/title_propiedades_cuerda"
+        tools:layout="@layout/fragment_propiedades_cuerda" />
 
     <fragment
         android:id="@+id/navigation_configuraciones"
@@ -22,4 +22,10 @@
         android:name="com.example.propiedadesguitarra2.ui.cargarguardar.CargarGuardarFragment"
         android:label="@string/title_guardar"
         tools:layout="@layout/fragment_cargar_guardar" />
+
+    <fragment
+        android:id="@+id/navigation_propiedades"
+        android:name="com.example.propiedadesguitarra2.ui.propiedades.PropiedadesFragment"
+        android:label="@string/fragment_propiedades"
+        tools:layout="@layout/fragment_propiedades" />
 </navigation>

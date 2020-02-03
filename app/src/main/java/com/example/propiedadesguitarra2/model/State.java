@@ -6,18 +6,27 @@ import java.util.Map;
 
 public class State implements Serializable {
 
-    public Map<Integer, Map<String, String>> cuerdas = new HashMap<>();
-
     // Configuraciones que requieren reinicio
-    public Long nFrames = 100000000L; // Cantidad de iteraciones del programa
-    public Long samplerate = 44100L;
-    public Integer nbufferii = 64;
-    public Integer canalesEntrada = 2;
-    public Integer npot = 2048; // Tamano tabla energia potencial
+    public String nFrames = "1|8"; // Cantidad de iteraciones del programa
+    public String samplerate = "44100";
+    public String nbufferii = "64";
+    public String canalesEntrada = "2";
+    public String npot = "2048"; // Tamaño tabla energia potencial
+    public String dedoSize = "64";
+    public String softrealtimeRefresh = "200";
     public Boolean debugMode = false;
-    public Integer dedoSize = 64;
-    public Integer softrealtimeRefresh = 200;
     public Boolean imprimir = false;
+
+    // Configuraciones real-time
+    public String escalaIntensidad = "1";
+    public String distanciaEquilibrioResorte = "20";
+    public String distanciaEntreNodos = "5|4";
+    public String centro = "25|-2"; // Donde se pone el dedo en la parte izq de la guitarra
+    public String maxp = "1|-1"; // Metaparametros de la friccion en las puntas
+    public String expp = "6|-1"; // Metaparametros de la friccion en las puntas - este es el "orden" en el codigo
+    public String ordenMasa = "1|-1";
+
+    public Map<Integer, Map<String, String>> cuerdas = new HashMap<>();
 
     public State() {
         // Configuracion por default

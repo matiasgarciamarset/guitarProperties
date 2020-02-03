@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/navigation_propiedades_cuerda"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_propiedades_cuerda" />
+
+    <item
         android:id="@+id/navigation_propiedades"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/title_propiedades" />

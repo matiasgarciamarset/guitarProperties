@@ -1,4 +1,4 @@
-package com.example.propiedadesguitarra2.ui.propiedades.components;
+package com.example.propiedadesguitarra2.components;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,18 +8,18 @@ import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.util.function.BiConsumer;
+import com.example.propiedadesguitarra2.NumberConverter;
 
-import static com.example.propiedadesguitarra2.StateManager.convertToNumbers;
-import static com.example.propiedadesguitarra2.StateManager.prettyPrint;
+import java.util.function.BiConsumer;
 
 public class NumberComponent {
     private EditText numeroEditBox;
     private SeekBar numeroBar;
     private NumberPicker exponenteNumberPicker;
     private TextView numeroYexponenteTextView;
+    private int minValue;
 
-    private BiConsumer<Double, Integer> onChange = null;
+    private BiConsumer<Integer, Integer> onChange = null;
 
     public NumberComponent(EditText numeroEditBox, NumberPicker exponentNumberPicker, SeekBar numeroBar, TextView vista) {
         this.numeroEditBox = numeroEditBox;
@@ -29,7 +29,7 @@ public class NumberComponent {
 
 
         exponenteNumberPicker.setWrapSelectorWheel(true);
-        final int minValue = -20;
+        minValue = -20;
         final int maxValue = 20;
         exponenteNumberPicker.setMinValue(0);
         exponenteNumberPicker.setMaxValue(maxValue - minValue);
@@ -49,7 +49,7 @@ public class NumberComponent {
                 display(NumberComponent.this.numeroEditBox, exponenteNumberPicker);
                 if (onChange != null && NumberComponent.this.numeroEditBox.getText().length() > 0 &&
                         !NumberComponent.this.numeroEditBox.getText().equals("-"))
-                    onChange.accept(Double.parseDouble(NumberComponent.this.numeroEditBox.getText().toString()), exponenteNumberPicker.getValue() - 20);
+                    onChange.accept(Integer.parseInt(NumberComponent.this.numeroEditBox.getText().toString()), exponenteNumberPicker.getValue() + minValue);
             }
         });
 
@@ -59,7 +59,7 @@ public class NumberComponent {
             this.numeroBar.setProgress(500);
             display(this.numeroEditBox, exponenteNumberPicker);
             if (onChange != null && NumberComponent.this.numeroEditBox.getText().length() > 0)
-                onChange.accept(Double.parseDouble(this.numeroEditBox.getText().toString()), exponenteNumberPicker.getValue() - 20);
+                onChange.accept(Integer.parseInt(this.numeroEditBox.getText().toString()), exponenteNumberPicker.getValue() + minValue);
         });
 
         this.numeroBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -83,22 +83,22 @@ public class NumberComponent {
         });
     }
 
-    public void onChange(BiConsumer<Double, Integer> method) {
+    public void onChange(BiConsumer<Integer, Integer> method) {
         this.onChange = method;
     }
 
     public void update(String value) {
-        Pair<Double, Integer> parsed = convertToNumbers(value);
-        numeroEditBox.setText(parsed.first.toString().split("\\.")[0]); // Elimino el punto del Double
-        exponenteNumberPicker.setValue(parsed.second + 20);
-        numeroYexponenteTextView.setText("");
+        Pair<Integer, Integer> parsed = NumberConverter.getCoefAndExp(value);
+        numeroEditBox.setText(parsed.first.toString());
+        exponenteNumberPicker.setValue(parsed.second - minValue);
+        numeroYexponenteTextView.setText(NumberConverter.prettyPrint(parsed.first, parsed.second));
     }
 
     private void display(EditText friccNum, NumberPicker friccDec) {
         if (friccNum.getText()!= null && friccNum.getText().length() > 0) {
-            Double value = Double.parseDouble(friccNum.getText().toString());
-            int dec = friccDec.getValue() - 20;
-            numeroYexponenteTextView.setText(prettyPrint(value, dec));
+            Integer value = Integer.parseInt(friccNum.getText().toString());
+            int dec = friccDec.getValue() + minValue;
+            numeroYexponenteTextView.setText(NumberConverter.prettyPrint(value, dec));
         }
     }
 }

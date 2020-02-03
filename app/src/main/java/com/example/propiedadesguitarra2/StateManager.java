@@ -1,14 +1,18 @@
 package com.example.propiedadesguitarra2;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.util.Pair;
+import android.widget.TextView;
 
 import com.example.propiedadesguitarra2.model.State;
+import com.example.propiedadesguitarra2.ui.cargarguardar.BluetoothService;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.function.BiConsumer;
 
 
 public class StateManager {
@@ -17,11 +21,12 @@ public class StateManager {
 
     private String currentFile;
 
-    private static final char SEPARATOR = '|';
-
     private static StateManager stateManager = null;
 
-    public static StateManager get(Context context) {
+    private StringBuffer mOutStringBuffer;
+    private BluetoothService bService;
+
+    public static synchronized StateManager get(Context context) {
         if (stateManager == null)
             stateManager = new StateManager(context);
         return stateManager;
@@ -33,6 +38,7 @@ public class StateManager {
         } else {
             read(fileList(context)[0], context);
         }
+        bService = new BluetoothService(context);
     }
 
     public void save(String fileName, Context context) {
@@ -86,35 +92,21 @@ public class StateManager {
         return context.deleteFile(fileName);
     }
 
-    // Toma valor con formato "coef" o "coef|exp". Ejemplo "3" o "70|-2"
-    public static Pair<Double, Integer> convertToNumbers(String formatedValue) {
-        int sp_pos = formatedValue.indexOf(SEPARATOR);
-        if (sp_pos == -1) {
-            return Pair.create(Double.parseDouble(formatedValue), 0);
+    public Boolean sendByBluetooth(String message) {
+        // Chequeo que el servicio este conectado
+        if (bService.getState() != 3) {
+            return false;
         }
-        Double coef = Double.parseDouble(formatedValue.substring(0, sp_pos));
-        Integer exp = Integer.parseInt(formatedValue.substring(sp_pos+1));
-        return Pair.create(coef, exp);
+
+        if (message.length() > 0) {
+            byte[] send = message.getBytes();
+            bService.write(send);
+        }
+        return true;
     }
 
-    public static String prettyPrint(String value) {
-        Pair<Double, Integer> valueP = convertToNumbers(value);
-        return prettyPrint(valueP.first, valueP.second);
-    }
-
-    public static String prettyPrint(Double coef, Integer exp) {
-        Double result = coef * Math.pow(10, exp);
-
-        return truncate(String.format("%.10f",result), exp);
-    }
-
-    // Crea la codificacion usada para persistir
-    public static String parseToString(Double coef, Integer exp) {
-        return exp == 0 ? truncate(coef.toString(), 0) : truncate(coef.toString(), 0) + SEPARATOR + exp.toString();
-    }
-
-    private static String truncate(String number, Integer exp) {
-        String[] parts = number.split("\\.");
-        return (parts.length < 2 || exp >= 0) ? parts[0] : parts[0].concat("."+parts[1].substring(0, Math.min(exp*-1, parts[1].length())));
+    public void connectBluetooth(BluetoothDevice device, BiConsumer<Integer, String> method) {
+        bService.connect(device);
+        bService.onConnectionStatusChange(method);
     }
 }
