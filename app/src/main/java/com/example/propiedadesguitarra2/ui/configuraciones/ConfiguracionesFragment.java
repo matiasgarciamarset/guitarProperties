@@ -1,8 +1,6 @@
 package com.example.propiedadesguitarra2.ui.configuraciones;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.propiedadesguitarra2.NumberConverter;
 import com.example.propiedadesguitarra2.R;
 import com.example.propiedadesguitarra2.StateManager;
 import com.example.propiedadesguitarra2.components.SimpleTextComponent;
-
-import java.util.function.Consumer;
+import com.example.propiedadesguitarra2.model.Pair;
 
 public class ConfiguracionesFragment extends Fragment {
-
-    private ConfiguracionesViewModel configuracionesViewModel;
 
     private StateManager stateManager;
 
@@ -39,8 +33,7 @@ public class ConfiguracionesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        configuracionesViewModel =
-                ViewModelProviders.of(this).get(ConfiguracionesViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_configuraciones, container, false);
 
         stateManager = StateManager.get(this.getContext());
@@ -63,13 +56,13 @@ public class ConfiguracionesFragment extends Fragment {
 
         // Guardo cambios en State
         // Como estas variables se aplican solo despues de reiniciar, no se envian al dispositivo hasta que se guarda y luego reinicia
-        nFramesText.onChange((c, e) -> stateManager.state.nFrames = NumberConverter.serialize(c, e));
-        sampleRateText.onChange((c, e) -> stateManager.state.samplerate = NumberConverter.serialize(c, e));
-        nbuferiiText.onChange((c, e) -> stateManager.state.nbufferii = NumberConverter.serialize(c, e));
-        canalesEntradaText.onChange((c, e) -> stateManager.state.canalesEntrada = NumberConverter.serialize(c, e));
-        npotText.onChange((c, e) -> stateManager.state.npot = NumberConverter.serialize(c, e));
-        dedoSizeText.onChange((c, e) -> stateManager.state.dedoSize = NumberConverter.serialize(c, e));
-        softrealtimeRefreshText.onChange((c, e) -> stateManager.state.softrealtimeRefresh = NumberConverter.serialize(c, e));
+        nFramesText.onChange((c, e) -> stateManager.state.nFrames = Pair.create(c, e));
+        sampleRateText.onChange((c, e) -> stateManager.state.samplerate = Pair.create(c, e));
+        nbuferiiText.onChange((c, e) -> stateManager.state.nbufferii = Pair.create(c, e));
+        canalesEntradaText.onChange((c, e) -> stateManager.state.canalesEntrada = Pair.create(c, e));
+        npotText.onChange((c, e) -> stateManager.state.npot = Pair.create(c, e));
+        dedoSizeText.onChange((c, e) -> stateManager.state.dedoSize = Pair.create(c, e));
+        softrealtimeRefreshText.onChange((c, e) -> stateManager.state.softrealtimeRefresh = Pair.create(c, e));
         debugModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.debugMode = isChecked);
         imprimirSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.imprimir = isChecked);
 

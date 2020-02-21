@@ -2,13 +2,13 @@ package com.example.propiedadesguitarra2.components;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Pair;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.propiedadesguitarra2.NumberConverter;
+import com.example.propiedadesguitarra2.converters.NumberConverter;
+import com.example.propiedadesguitarra2.model.Pair;
 
 import java.util.function.BiConsumer;
 
@@ -87,18 +87,17 @@ public class NumberComponent {
         this.onChange = method;
     }
 
-    public void update(String value) {
-        Pair<Integer, Integer> parsed = NumberConverter.getCoefAndExp(value);
-        numeroEditBox.setText(parsed.first.toString());
-        exponenteNumberPicker.setValue(parsed.second - minValue);
-        numeroYexponenteTextView.setText(NumberConverter.prettyPrint(parsed.first, parsed.second));
+    public void update(Pair<Integer, Integer> value) {
+        numeroEditBox.setText(value.first.toString());
+        exponenteNumberPicker.setValue(value.second - minValue);
+        numeroYexponenteTextView.setText(NumberConverter.prettyPrint(value));
     }
 
     private void display(EditText friccNum, NumberPicker friccDec) {
         if (friccNum.getText()!= null && friccNum.getText().length() > 0) {
             Integer value = Integer.parseInt(friccNum.getText().toString());
             int dec = friccDec.getValue() + minValue;
-            numeroYexponenteTextView.setText(NumberConverter.prettyPrint(value, dec));
+            numeroYexponenteTextView.setText(NumberConverter.prettyPrint(Pair.create(value, dec)));
         }
     }
 }

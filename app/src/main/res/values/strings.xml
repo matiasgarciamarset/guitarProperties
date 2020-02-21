@@ -26,5 +26,12 @@
     <string name="title_paired_devices">Dispositivos conectados</string>
     <string name="title_other_devices">Otros dispositivos disponibles</string>
     <string name="button_scan">Buscar dispositivos</string>
-    <string name="bluetooth_no_available">El adaptador Bluetooth no esta disponible</string>
+    <string name="bluetooth_no_available">El adaptador Bluetooth no está disponible</string>
+    <string name="delete_confirm">Seguro desea eliminar?</string>
+    <string name="delete_unique_confirm">Eliminando el último archivo se creara otro llamado \'default\' con valores pre-cargados. Desea continuar?</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="bt_connected">Conectado a dispositivo:</string>
+    <string name="bt_connecting">Conectando ...</string>
+    <string name="bt_error">Hubo un error al conectar - Error:</string>
 </resources>

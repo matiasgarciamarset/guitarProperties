@@ -17,11 +17,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.propiedadesguitarra2.NumberConverter;
 import com.example.propiedadesguitarra2.R;
 import com.example.propiedadesguitarra2.StateManager;
 import com.example.propiedadesguitarra2.components.NumberComponent;
 import com.example.propiedadesguitarra2.components.SimpleTextComponent;
+import com.example.propiedadesguitarra2.model.Pair;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -29,7 +29,6 @@ import java.util.Map;
 
 public class PropiedadesCuerdaFragment extends Fragment {
 
-    private PropiedadesCuerdaViewModel propiedadesCuerdaViewModel;
     private Switch todasSwitch;
     private NumberComponent friccionPorCuerda;
     private NumberComponent frecuenciaPorCuerda;
@@ -43,8 +42,7 @@ public class PropiedadesCuerdaFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        propiedadesCuerdaViewModel =
-                ViewModelProviders.of(this).get(PropiedadesCuerdaViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_propiedades_cuerda, container, false);
 
         stateManager = StateManager.get(this.getContext());
@@ -69,9 +67,7 @@ public class PropiedadesCuerdaFragment extends Fragment {
                 (SeekBar) getView().findViewById(R.id.friccBar),
                 (TextView) getView().findViewById(R.id.friccView));
 
-        friccionPorCuerda.onChange((coef, exp) ->
-                getSelectedString().forEach(cuerda ->
-                        cuerda.put("friccion", NumberConverter.serialize(coef, exp))));
+        friccionPorCuerda.onChange((coef, exp) -> updateAndSend("friccion", coef, exp));
 
         // Frecuencia
         this.frecuenciaPorCuerda = new NumberComponent(
@@ -80,25 +76,23 @@ public class PropiedadesCuerdaFragment extends Fragment {
                 (SeekBar) getView().findViewById(R.id.frecBar),
                 (TextView) getView().findViewById(R.id.frecView));
 
-        frecuenciaPorCuerda.onChange((coef, exp) ->
-                getSelectedString().forEach(cuerda ->
-                        cuerda.put("frecuencia", NumberConverter.serialize(coef, exp))));
+        frecuenciaPorCuerda.onChange((coef, exp) -> updateAndSend("frecuencia", coef, exp));
 
         // Otros
         nodosText = new SimpleTextComponent((EditText) getView().findViewById(R.id.nodosText));
-        nodosText.onChange((coef, exp) -> getSelectedString().forEach(cuerda -> cuerda.put("nodos", NumberConverter.serialize(coef, exp))));
+        nodosText.onChange((coef, exp) -> updateAndSend("nodos", coef, exp));
 
         anchoPuntaText =  new SimpleTextComponent((EditText) getView().findViewById(R.id.anchoPuntaText));
-        anchoPuntaText.onChange((coef, exp) -> getSelectedString().forEach(cuerda -> cuerda.put("anchoPuntas", NumberConverter.serialize(coef, exp))));
+        anchoPuntaText.onChange((coef, exp) -> updateAndSend("anchoPuntas", coef, exp));
 
         maxFriccPuntasText =  new SimpleTextComponent((EditText) getView().findViewById(R.id.maxFriccPuntasText));
-        maxFriccPuntasText.onChange((coef, exp) -> getSelectedString().forEach(cuerda -> cuerda.put("maxFriccionEnPunta", NumberConverter.serialize(coef, exp))));
+        maxFriccPuntasText.onChange((coef, exp) -> updateAndSend("maxFriccionEnPunta", coef, exp));
 
         diapasonText =  new SimpleTextComponent((EditText) getView().findViewById(R.id.diapasonText));
-        diapasonText.onChange((coef, exp) -> getSelectedString().forEach(cuerda -> cuerda.put("distanciaCuerdaDiapason", NumberConverter.serialize(coef, exp))));
+        diapasonText.onChange((coef, exp) -> updateAndSend("distanciaCuerdaDiapason", coef, exp));
 
         trasteText =  new SimpleTextComponent((EditText) getView().findViewById(R.id.trasteText));
-        trasteText.onChange((coef, exp) -> getSelectedString().forEach(cuerda -> cuerda.put("distanciaCuerdaTraste", NumberConverter.serialize(coef, exp))));
+        trasteText.onChange((coef, exp) -> updateAndSend("distanciaCuerdaTraste", coef, exp));
 
         updateAll();
 
@@ -113,8 +107,13 @@ public class PropiedadesCuerdaFragment extends Fragment {
         });
     }
 
+    private void updateAndSend(String variable, Integer coef, Integer exp) {
+        getSelectedString().forEach(cuerda -> cuerda.put(variable, Pair.create(coef, exp)));
+        stateManager.sendValueByBluetooth(variable, Pair.create(coef, exp));
+    }
+
     private void updateAll() {
-        Integer selected = Integer.parseInt(cuerda.getSelectedItem().toString());
+        Integer selected = Integer.parseInt(cuerda.getSelectedItem().toString()) - 1;
         friccionPorCuerda.update(stateManager.state.cuerdas.get(selected).get("friccion"));
         frecuenciaPorCuerda.update(stateManager.state.cuerdas.get(selected).get("frecuencia"));
         nodosText.update(stateManager.state.cuerdas.get(selected).get("nodos"));
@@ -124,13 +123,13 @@ public class PropiedadesCuerdaFragment extends Fragment {
         trasteText.update(stateManager.state.cuerdas.get(selected).get("distanciaCuerdaTraste"));
     }
 
-    private Collection<Map<String, String>> getSelectedString() {
+    private Collection<Map<String, Pair<Integer, Integer>>> getSelectedString() {
         if (todasSwitch.isChecked()) {
             // Devulevo todas las cuerdas
             return stateManager.state.cuerdas.values();
         } else {
             return Collections.singleton(
-                    stateManager.state.cuerdas.get(Integer.parseInt(cuerda.getSelectedItem().toString()))
+                    stateManager.state.cuerdas.get(Integer.parseInt(cuerda.getSelectedItem().toString()) - 1)
             );
         }
     }

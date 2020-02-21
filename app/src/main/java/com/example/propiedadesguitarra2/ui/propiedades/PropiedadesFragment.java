@@ -5,21 +5,19 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.example.propiedadesguitarra2.NumberConverter;
 import com.example.propiedadesguitarra2.R;
 import com.example.propiedadesguitarra2.StateManager;
 import com.example.propiedadesguitarra2.components.SimpleTextComponent;
+import com.example.propiedadesguitarra2.model.Pair;
 
 
 public class PropiedadesFragment extends Fragment {
-    private PropiedadesViewModel propiedadesViewModel;
     private StateManager stateManager;
 
     private SimpleTextComponent escalaIntensidadText;
@@ -32,8 +30,7 @@ public class PropiedadesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        propiedadesViewModel =
-                ViewModelProviders.of(this).get(PropiedadesViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_propiedades, container, false);
 
         stateManager = StateManager.get(this.getContext());
@@ -45,25 +42,46 @@ public class PropiedadesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         escalaIntensidadText = new SimpleTextComponent((EditText) getView().findViewById(R.id.escalaIntensidadText));
-        escalaIntensidadText.onChange((coef, exp) -> stateManager.state.escalaIntensidad = NumberConverter.serialize(coef, exp));
+        escalaIntensidadText.onChange((coef, exp) -> {
+            stateManager.state.escalaIntensidad = Pair.create(coef, exp);
+            stateManager.sendValueByBluetooth("escalaIntensidad", Pair.create(coef, exp));
+        });
 
         distanciaEquilibrioResorteText = new SimpleTextComponent((EditText) getView().findViewById(R.id.distanciaEquilibrioResorteText));
-        distanciaEquilibrioResorteText.onChange((coef, exp) -> stateManager.state.distanciaEquilibrioResorte = NumberConverter.serialize(coef, exp));
+        distanciaEquilibrioResorteText.onChange((coef, exp) -> {
+            stateManager.state.distanciaEquilibrioResorte = Pair.create(coef, exp);
+            stateManager.sendValueByBluetooth("distanciaEquilibrioResorte", Pair.create(coef, exp));
+        });
 
         distanciaEntreNodosText = new SimpleTextComponent((EditText) getView().findViewById(R.id.distanciaEntreNodosText));
-        distanciaEntreNodosText.onChange((coef, exp) -> stateManager.state.distanciaEntreNodos = NumberConverter.serialize(coef, exp));
+        distanciaEntreNodosText.onChange((coef, exp) -> {
+            stateManager.state.distanciaEntreNodos = Pair.create(coef, exp);
+            stateManager.sendValueByBluetooth("distanciaEntreNodos", Pair.create(coef, exp));
+        });
 
         centroText = new SimpleTextComponent((EditText) getView().findViewById(R.id.centroText));
-        centroText.onChange((coef, exp) -> stateManager.state.centro = NumberConverter.serialize(coef, exp));
+        centroText.onChange((coef, exp) -> {
+            stateManager.state.centro = Pair.create(coef, exp);
+            stateManager.sendValueByBluetooth("centro", Pair.create(coef, exp));
+        });
 
         maxpText = new SimpleTextComponent((EditText) getView().findViewById(R.id.maxpText));
-        maxpText.onChange((coef, exp) -> stateManager.state.maxp = NumberConverter.serialize(coef, exp));
+        maxpText.onChange((coef, exp) -> {
+            stateManager.state.maxp = Pair.create(coef, exp);
+            stateManager.sendValueByBluetooth("maxṕ", Pair.create(coef, exp));
+        });
 
         exppText = new SimpleTextComponent((EditText) getView().findViewById(R.id.exppText));
-        exppText.onChange((coef, exp) -> stateManager.state.expp = NumberConverter.serialize(coef, exp));
+        exppText.onChange((coef, exp) -> {
+            stateManager.state.expp = Pair.create(coef, exp);
+            stateManager.sendValueByBluetooth("expp", Pair.create(coef, exp));
+        });
 
         ordenMasaText = new SimpleTextComponent((EditText) getView().findViewById(R.id.ordenMasaText));
-        ordenMasaText.onChange((coef, exp) -> stateManager.state.ordenMasa = NumberConverter.serialize(coef, exp));
+        ordenMasaText.onChange((coef, exp) -> {
+            stateManager.state.ordenMasa = Pair.create(coef, exp);
+            stateManager.sendValueByBluetooth("ordenMasa", Pair.create(coef, exp));
+        });
 
         updateAll();
     }

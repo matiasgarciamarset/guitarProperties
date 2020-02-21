@@ -4,7 +4,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-import com.example.propiedadesguitarra2.NumberConverter;
+import com.example.propiedadesguitarra2.converters.NumberConverter;
+import com.example.propiedadesguitarra2.model.Pair;
 
 import java.util.function.BiConsumer;
 
@@ -18,8 +19,8 @@ public class SimpleTextComponent {
         field.addTextChangedListener(onSimpleFieldChange());
     }
 
-    public void update(String number) {
-        field.setText(NumberConverter.desserialize(number));
+    public void update(Pair<Integer, Integer> number) {
+        field.setText(NumberConverter.prettyPrint(number));
     }
 
     public void onChange(BiConsumer<Integer, Integer> method) {

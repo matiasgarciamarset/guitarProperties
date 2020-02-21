@@ -2,29 +2,24 @@ package com.example.propiedadesguitarra2;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.util.Pair;
-import android.widget.TextView;
+import android.os.Handler;
 
+import com.example.propiedadesguitarra2.converters.NumberCompressor;
+import com.example.propiedadesguitarra2.model.Pair;
 import com.example.propiedadesguitarra2.model.State;
+import com.example.propiedadesguitarra2.storage.LocalStorageManager;
 import com.example.propiedadesguitarra2.ui.cargarguardar.BluetoothService;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.function.BiConsumer;
 
 
 public class StateManager {
 
     public State state = new State();
 
-    private String currentFile;
+    private volatile static StateManager stateManager = null;
 
-    private static StateManager stateManager = null;
-
-    private StringBuffer mOutStringBuffer;
+    private LocalStorageManager localStorageManager;
     private BluetoothService bService;
+    private MetaAlgorithms metaAlgorithms;
 
     public static synchronized StateManager get(Context context) {
         if (stateManager == null)
@@ -33,79 +28,101 @@ public class StateManager {
     }
 
     private StateManager(Context context) {
-        if (fileList(context).length == 0) {
-            save("default", context);
+        localStorageManager = new LocalStorageManager();
+        if (localStorageManager.storedStates(context).length == 0) {
+            localStorageManager.save("default", context, new State());
         } else {
-            read(fileList(context)[0], context);
+            state = localStorageManager.read(localStorageManager.storedStates(context)[0], context);
         }
         bService = new BluetoothService(context);
+        metaAlgorithms = new MetaAlgorithms();
     }
 
     public void save(String fileName, Context context) {
-        try {
-            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(state);
-            os.close();
-            fos.close();
-            currentFile = fileName;
-        } catch (Exception e) {
-            e.printStackTrace();
+        localStorageManager.save(fileName, context, state);
+    }
+
+    public boolean read(String fileName, Context context) {
+        State newState = localStorageManager.read(fileName, context);
+        if (newState != null) {
+            state = newState;
+            return sendAllByBluetooth();
         }
-    }
-
-    public void read(String fileName, Context context) {
-        if (fileName.equals(currentFile)) return;
-        try {
-            FileInputStream fis = context.openFileInput(fileName);
-            ObjectInputStream is = new ObjectInputStream(fis);
-            state = (State) is.readObject();
-            is.close();
-            fis.close();
-            currentFile = fileName;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String[] fileList(Context context) {
-        return context.fileList();
-    }
-
-    public String currentFile(Context context) {
-        return currentFile;
+        return false;
     }
 
     public boolean delete(String fileName, Context context) {
-        String[] files = fileList(context);
-        if (files.length <= 1) {
-            return false;
+        State newState = localStorageManager.delete(fileName, context);
+        if (newState != null) {
+            state = newState;
+            return sendAllByBluetooth();
         }
-        String other = null;
-        for (String file : files) {
-            if (!file.equals(fileName)) {
-                other = file;
-                break;
-            }
-        }
-        read(other, context);
-        return context.deleteFile(fileName);
+        return false;
     }
 
-    public Boolean sendByBluetooth(String message) {
+    public String currentFile() {
+        return localStorageManager.currentFile();
+    }
+
+    public String[] fileList(Context context) {
+        return localStorageManager.storedStates(context);
+    }
+
+    public Boolean sendAllByBluetooth() {
         // Chequeo que el servicio este conectado
         if (bService.getState() != 3) {
             return false;
         }
 
-        if (message.length() > 0) {
-            byte[] send = message.getBytes();
+        String allVariables = NumberCompressor.compressAll(state);
+        if (allVariables.length() > 0) {
+            byte[] send = allVariables.getBytes();
             bService.write(send);
         }
         return true;
     }
 
-    public void connectBluetooth(BluetoothDevice device, BiConsumer<Integer, String> method) {
+    public Boolean sendValueByBluetooth(String variableName, Pair<Integer, Integer> value) {
+        // Chequeo que el servicio este conectado
+        if (bService.getState() != 3) {
+            return false;
+        }
+
+        // Envio variables generadas si corresponde
+        if (metaAlgorithms.generate(variableName, state)) {
+            if (state.masaPorNodoEdited) {
+                String send = NumberCompressor.generateValue("masaPorNodo", state.masaPorNodo);
+                if (send != null) bService.write(send.getBytes());
+                state.masaPorNodoEdited = false;
+            }
+
+            if (state.friccionSinDedoEdited) {
+                String send = NumberCompressor.generateValue("friccionSinDedo", state.friccionSinDedo);
+                if (send != null) bService.write(send.getBytes());
+                state.friccionSinDedoEdited = false;
+            }
+
+            if (state.friccionConDedoEdited) {
+                String send = NumberCompressor.generateValue("friccionConDedo", state.friccionConDedo);
+                if (send != null) bService.write(send.getBytes());
+                state.friccionConDedoEdited = false;
+            }
+
+            if (state.minimosYtrastesEdited) {
+                String send = NumberCompressor.generateValue("minimosYtrastes", state.minimosYtrastes);
+                if (send != null) bService.write(send.getBytes());
+                state.minimosYtrastesEdited = false;
+            }
+        }
+
+        // Envio variable
+        String content = NumberCompressor.generateValue(variableName, value);
+        if (content != null) bService.write(content.getBytes());
+
+        return true;
+    }
+
+    public void connectBluetooth(BluetoothDevice device, Handler method) {
         bService.connect(device);
         bService.onConnectionStatusChange(method);
     }

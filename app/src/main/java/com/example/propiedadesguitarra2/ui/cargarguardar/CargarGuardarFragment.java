@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +23,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.propiedadesguitarra2.R;
 import com.example.propiedadesguitarra2.StateManager;
@@ -29,7 +31,6 @@ import com.example.propiedadesguitarra2.StateManager;
 
 public class CargarGuardarFragment extends Fragment {
 
-    private CargarGuardarViewModel cargarGuardarViewModel;
     private StateManager stateManager;
     private Spinner guardados;
     private EditText guardarText;
@@ -42,8 +43,7 @@ public class CargarGuardarFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        cargarGuardarViewModel =
-                ViewModelProviders.of(this).get(CargarGuardarViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_cargar_guardar, container, false);
 
         stateManager = StateManager.get(this.getContext());
@@ -79,15 +79,14 @@ public class CargarGuardarFragment extends Fragment {
         guardarText = (EditText) getView().findViewById(R.id.guardarText);
         guardar = (Button) getView().findViewById(R.id.guardar);
         eliminar = (Button) getView().findViewById(R.id.eliminar);
-        updateGuardadosSpinner(this.getContext());
-        guardarText.setText(stateManager.currentFile(this.getContext()));
+        updateGuardadosSpinner(getActivity().getBaseContext());
+        guardarText.setText(stateManager.currentFile());
 
         guardados.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                stateManager.read(parent.getItemAtPosition(position).toString(), view.getContext());
+                stateManager.read(parent.getItemAtPosition(position).toString(), getActivity().getBaseContext());
                 guardarText.setText(parent.getItemAtPosition(position).toString());
-                stateManager.sendByBluetooth(parent.getItemAtPosition(position).toString()); // TODO only for testing
             }
 
             @Override
@@ -95,27 +94,29 @@ public class CargarGuardarFragment extends Fragment {
         });
 
         guardar.setOnClickListener(v -> {
-            stateManager.save(guardarText.getText().toString(), v.getContext());
-            updateGuardadosSpinner(v.getContext());
+            stateManager.save(guardarText.getText().toString(), getActivity().getBaseContext());
+            updateGuardadosSpinner(getActivity().getBaseContext());
         });
 
         eliminar.setOnClickListener(v -> {
-            if (stateManager.delete(guardarText.getText().toString(), v.getContext())) {
-                DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-                    switch (which){
-                        case DialogInterface.BUTTON_POSITIVE:
-                            updateGuardadosSpinner(v.getContext());
-                            guardarText.setText(stateManager.currentFile(v.getContext()));
-                            break;
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            break;
-                    }
-                };
+            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        if (stateManager.delete(guardarText.getText().toString(), getActivity().getBaseContext())) {
+                            updateGuardadosSpinner(getActivity().getBaseContext());
+                            guardarText.setText(stateManager.currentFile());
+                        }
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            };
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                builder.setMessage("Seguro desea eliminar?").setPositiveButton("Si", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
-            }
+            String message = stateManager.fileList(getActivity().getBaseContext()).length > 1 ? getString(R.string.delete_confirm) :
+                    getString(R.string.delete_unique_confirm);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(message).setPositiveButton(R.string.yes, dialogClickListener)
+                    .setNegativeButton(R.string.no, dialogClickListener).show();
         });
     }
 
@@ -133,7 +134,7 @@ public class CargarGuardarFragment extends Fragment {
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, stateManager.fileList(context));
         arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         guardados.setAdapter(arrayAdapter1);
-        guardados.setSelection(arrayAdapter1.getPosition(stateManager.currentFile(context)));
+        guardados.setSelection(arrayAdapter1.getPosition(stateManager.currentFile()));
     }
 
     private void connectDevice(Intent data) {
@@ -146,10 +147,26 @@ public class CargarGuardarFragment extends Fragment {
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
-        stateManager.connectBluetooth(device, (status, dev) -> getActivity().runOnUiThread(
-                () -> bluetoothView.setText(status == 2 ? "Conectando ..." :
-                        ((status == 3 ? "Conectado a dispositivo: " :
-                                "Hubo un error al conectar - Error: ") + dev)))
-        );
+        stateManager.connectBluetooth(device, handler);
     }
+
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+        FragmentActivity activity = getActivity();
+         if (msg.what == BluetoothService.CONNECTION_STATUS) {
+             switch (msg.arg1) {
+                 case 3:
+                     bluetoothView.setText(getString(R.string.bt_connected) + msg.getData().getString("device"));
+                     break;
+                 case 2:
+                     bluetoothView.setText(R.string.bt_connecting);
+                     break;
+                 case 0:
+                     bluetoothView.setText(getString(R.string.bt_error) + msg.getData().getString("error"));
+                     break;
+             }
+         }
+        }
+    };
 }

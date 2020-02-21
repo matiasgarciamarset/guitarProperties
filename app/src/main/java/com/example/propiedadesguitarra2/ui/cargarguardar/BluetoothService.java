@@ -59,7 +59,9 @@ public class BluetoothService {
     private int mNewState;
 
     private BiConsumer<byte[], Integer> onReceiveMethod;
-    private BiConsumer<Integer, String> onConnectedMethod;
+    private Handler onConnectedMethod;
+
+    public static int CONNECTION_STATUS = 0;
 
     public BluetoothService(Context context) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -85,15 +87,25 @@ public class BluetoothService {
         // Start the thread to connect with the given device
         mConnectThread = new ConnectThread(device);
         mConnectThread.start();
+        publicStatusChange("device", device.getName());
+    }
 
-        if (onConnectedMethod!= null) onConnectedMethod.accept(STATE_CONNECTED, device.getName());
+    private void publicStatusChange(String name, String value) {
+        if (onConnectedMethod!= null) {
+            Message msg = onConnectedMethod.obtainMessage(CONNECTION_STATUS);
+            Bundle bundle = new Bundle();
+            bundle.putString(name, value);
+            msg.setData(bundle);
+            onConnectedMethod.sendMessage(msg);
+            onConnectedMethod.obtainMessage(CONNECTION_STATUS, mState, -1).sendToTarget();
+        }
     }
 
     public synchronized int getState() {
         return mState;
     }
 
-    public void onConnectionStatusChange(BiConsumer<Integer, String> method) {
+    public void onConnectionStatusChange(Handler method) {
         this.onConnectedMethod = method;
     }
 
@@ -118,7 +130,7 @@ public class BluetoothService {
      *
      * @param socket The BluetoothSocket on which the connection was made
      */
-    public synchronized void connected(BluetoothSocket socket) {
+    private synchronized void connected(BluetoothSocket socket) {
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {
             mConnectThread.cancel();
@@ -178,8 +190,7 @@ public class BluetoothService {
                 } catch (IOException e) {
                     System.out.println("disconnected - " + e.getMessage());
                     mState = STATE_NONE;
-                    if (onConnectedMethod!= null) onConnectedMethod.accept(STATE_NONE, e.getMessage());
-                    start();
+                    publicStatusChange("error", "Socket no disponible, pruebe reiniciando conexión en servidor");
                     break;
                 }
             }
@@ -231,7 +242,7 @@ public class BluetoothService {
             }
             mmSocket = tmp;
             mState = STATE_CONNECTING;
-            if (onConnectedMethod!= null) onConnectedMethod.accept(STATE_CONNECTING, device.getName());
+            publicStatusChange("device", device.getName());
         }
 
         public void run() {
@@ -253,7 +264,7 @@ public class BluetoothService {
                     System.out.println("unable to close() socket during connection failure - " + e2.getMessage());
                 }
                 mState = STATE_NONE;
-                if (onConnectedMethod!= null) onConnectedMethod.accept(STATE_NONE, e.getMessage());
+                publicStatusChange("error", e.getMessage());
                 return;
             }
 
