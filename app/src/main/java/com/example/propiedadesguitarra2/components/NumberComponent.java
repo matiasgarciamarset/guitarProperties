@@ -3,39 +3,28 @@ package com.example.propiedadesguitarra2.components;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.example.propiedadesguitarra2.converters.NumberConverter;
 import com.example.propiedadesguitarra2.model.Pair;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class NumberComponent {
     private EditText numeroEditBox;
     private SeekBar numeroBar;
-    private NumberPicker exponenteNumberPicker;
-    private TextView numeroYexponenteTextView;
-    private int minValue;
+    private EditText factor;
+    private Float realFactor;
 
-    private BiConsumer<Integer, Integer> onChange = null;
+    private Consumer<Float> onChange = null;
 
-    public NumberComponent(EditText numeroEditBox, NumberPicker exponentNumberPicker, SeekBar numeroBar, TextView vista) {
+    public NumberComponent(EditText numeroEditBox, EditText factor, SeekBar numeroBar) {
         this.numeroEditBox = numeroEditBox;
-        this.exponenteNumberPicker = exponentNumberPicker;
+        this.factor = factor;
         this.numeroBar = numeroBar;
-        this.numeroYexponenteTextView = vista;
+        this.realFactor = getValueOrCero(factor.getText().toString());
 
-
-        exponenteNumberPicker.setWrapSelectorWheel(true);
-        minValue = -20;
-        final int maxValue = 20;
-        exponenteNumberPicker.setMinValue(0);
-        exponenteNumberPicker.setMaxValue(maxValue - minValue);
-        exponenteNumberPicker.setValue(maxValue);
-        exponenteNumberPicker.setFormatter(index -> Integer.toString(index + minValue));
-
+        numeroBar.setMax(100);
 
         this.numeroEditBox.addTextChangedListener(new TextWatcher() {
             @Override
@@ -46,36 +35,50 @@ public class NumberComponent {
 
             @Override
             public void afterTextChanged(Editable s) {
-                display(NumberComponent.this.numeroEditBox, exponenteNumberPicker);
                 if (onChange != null && NumberComponent.this.numeroEditBox.getText().length() > 0 &&
                         !NumberComponent.this.numeroEditBox.getText().equals("-"))
-                    onChange.accept(Integer.parseInt(NumberComponent.this.numeroEditBox.getText().toString()), exponenteNumberPicker.getValue() + minValue);
+                    onChange.accept(Float.parseFloat(NumberComponent.this.numeroEditBox.getText().toString()));
             }
         });
 
         this.numeroEditBox.setOnClickListener(v -> this.numeroBar.setProgress(500));
 
-        exponenteNumberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-            this.numeroBar.setProgress(500);
-            display(this.numeroEditBox, exponenteNumberPicker);
-            if (onChange != null && NumberComponent.this.numeroEditBox.getText().length() > 0)
-                onChange.accept(Integer.parseInt(this.numeroEditBox.getText().toString()), exponenteNumberPicker.getValue() + minValue);
+        this.factor.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                NumberComponent.this.numeroBar.setProgress(50);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                NumberComponent.this.realFactor = getValueOrCero(s.toString());
+            }
         });
 
         this.numeroBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            private Integer value;
-            private int prev_value = 500;
+            private Float value;
+            private int prev_value = 50;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                value += (progress > prev_value? 10 : (progress == prev_value ? 0 :-10));
+                value += (progress > prev_value? realFactor : (progress == prev_value ? 0 :-realFactor));
                 NumberComponent.this.numeroEditBox.setText(value.toString());
                 prev_value = progress;
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                value = Integer.parseInt(NumberComponent.this.numeroEditBox.getText().toString());
+                String number = NumberComponent.this.numeroEditBox.getText().toString();
+                if (number != null && number.length() > 1) {
+                    try {
+                        value = Float.parseFloat(number);
+                    } catch(NumberFormatException e) {
+                        NumberComponent.this.realFactor = 1f;
+                    }
+                }
             }
 
             @Override
@@ -83,21 +86,24 @@ public class NumberComponent {
         });
     }
 
-    public void onChange(BiConsumer<Integer, Integer> method) {
+    private Float getValueOrCero(String value) {
+        if (value != null && value.length() > 0) {
+            try {
+                return Float.parseFloat(value);
+            } catch(Exception e) {
+                System.out.println("No se puede convertir el numero a float: " + value);
+            }
+        }
+        return 0f;
+    }
+
+    public void onChange(Consumer<Float> method) {
         this.onChange = method;
     }
 
-    public void update(Pair<Integer, Integer> value) {
-        numeroEditBox.setText(value.first.toString());
-        exponenteNumberPicker.setValue(value.second - minValue);
-        numeroYexponenteTextView.setText(NumberConverter.prettyPrint(value));
-    }
-
-    private void display(EditText friccNum, NumberPicker friccDec) {
-        if (friccNum.getText()!= null && friccNum.getText().length() > 0) {
-            Integer value = Integer.parseInt(friccNum.getText().toString());
-            int dec = friccDec.getValue() + minValue;
-            numeroYexponenteTextView.setText(NumberConverter.prettyPrint(Pair.create(value, dec)));
-        }
+    public void update(Float value) {
+        numeroEditBox.setText(value.toString());
+        NumberComponent.this.realFactor = 1f;
+        factor.setText("1");
     }
 }

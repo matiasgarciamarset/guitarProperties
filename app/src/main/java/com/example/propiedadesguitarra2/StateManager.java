@@ -82,7 +82,7 @@ public class StateManager {
         return true;
     }
 
-    public Boolean sendValueByBluetooth(String variableName, Pair<Integer, Integer> value) {
+    public Boolean sendValueByBluetooth(String variableName, Float value) {
         // Chequeo que el servicio este conectado
         if (bService.getState() != 3) {
             return false;

@@ -44,25 +44,25 @@ public class ConfiguracionesFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        nFramesText = new SimpleTextComponent((EditText) getView().findViewById(R.id.nFramesText));
-        sampleRateText = new SimpleTextComponent((EditText) getView().findViewById(R.id.sampleRateText));
-        nbuferiiText = new SimpleTextComponent((EditText) getView().findViewById(R.id.nbuferiiText));
-        canalesEntradaText = new SimpleTextComponent((EditText) getView().findViewById(R.id.canalesEntradaText));
+        nFramesText = new SimpleTextComponent((EditText) getView().findViewById(R.id.nFramesText), false);
+        sampleRateText = new SimpleTextComponent((EditText) getView().findViewById(R.id.sampleRateText), false);
+        nbuferiiText = new SimpleTextComponent((EditText) getView().findViewById(R.id.nbuferiiText), false);
+        canalesEntradaText = new SimpleTextComponent((EditText) getView().findViewById(R.id.canalesEntradaText), false);
         npotText = new SimpleTextComponent((EditText) getView().findViewById(R.id.npotText));
-        dedoSizeText = new SimpleTextComponent((EditText) getView().findViewById(R.id.dedoSizeText));
-        softrealtimeRefreshText = new SimpleTextComponent((EditText) getView().findViewById(R.id.softrealtimeRefreshText));
+        dedoSizeText = new SimpleTextComponent((EditText) getView().findViewById(R.id.dedoSizeText), false);
+        softrealtimeRefreshText = new SimpleTextComponent((EditText) getView().findViewById(R.id.softrealtimeRefreshText), false);
         debugModeSwitch = (Switch) getView().findViewById(R.id.debugModeSwitch);
         imprimirSwitch = (Switch) getView().findViewById(R.id.imprimirSwitch);
 
         // Guardo cambios en State
         // Como estas variables se aplican solo despues de reiniciar, no se envian al dispositivo hasta que se guarda y luego reinicia
-        nFramesText.onChange((c, e) -> stateManager.state.nFrames = Pair.create(c, e));
-        sampleRateText.onChange((c, e) -> stateManager.state.samplerate = Pair.create(c, e));
-        nbuferiiText.onChange((c, e) -> stateManager.state.nbufferii = Pair.create(c, e));
-        canalesEntradaText.onChange((c, e) -> stateManager.state.canalesEntrada = Pair.create(c, e));
-        npotText.onChange((c, e) -> stateManager.state.npot = Pair.create(c, e));
-        dedoSizeText.onChange((c, e) -> stateManager.state.dedoSize = Pair.create(c, e));
-        softrealtimeRefreshText.onChange((c, e) -> stateManager.state.softrealtimeRefresh = Pair.create(c, e));
+        nFramesText.onChange(v -> stateManager.state.nFrames = v);
+        sampleRateText.onChange(v -> stateManager.state.samplerate = v);
+        nbuferiiText.onChange(v -> stateManager.state.nbufferii = v);
+        canalesEntradaText.onChange(v -> stateManager.state.canalesEntrada = v);
+        npotText.onChange(v -> stateManager.state.npot = v);
+        dedoSizeText.onChange(v -> stateManager.state.dedoSize = v);
+        softrealtimeRefreshText.onChange(v -> stateManager.state.softrealtimeRefresh = v);
         debugModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.debugMode = isChecked);
         imprimirSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.imprimir = isChecked);
 

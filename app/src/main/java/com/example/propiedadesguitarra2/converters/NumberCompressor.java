@@ -1,6 +1,5 @@
 package com.example.propiedadesguitarra2.converters;
 
-import com.example.propiedadesguitarra2.model.Pair;
 import com.example.propiedadesguitarra2.model.State;
 
 import java.util.Arrays;
@@ -73,15 +72,15 @@ public class NumberCompressor {
                 + "]"+END_CHARACTER;
     }
 
-    public static String generateValue(String variableName, Pair<Integer, Integer> value) {
+    public static String generateValue(String variableName, Float value) {
         if (!numberAssignator.containsKey(variableName))
             return null;
-        return START_CHARACTER + numberAssignator.get(variableName) + ":" + NumberConverter.serialize(value)+END_CHARACTER;
+        return START_CHARACTER + numberAssignator.get(variableName) + ":" + NumberConverter.serialize(value) + END_CHARACTER;
     }
 
     public static String generateValue(String variableName, Boolean value) {
         if (!numberAssignator.containsKey(variableName))
             return null;
-        return START_CHARACTER + numberAssignator.get(variableName) + ":" + (value ? "1" : "0")+END_CHARACTER;
+        return START_CHARACTER + numberAssignator.get(variableName) + ":" + (value ? "1" : "0") + END_CHARACTER;
     }
 }

@@ -63,17 +63,17 @@ public class MetaAlgorithms {
         Integer[] nodos = new Integer[state.cuerdas.size()];
         Integer sumNodos = 0;
         for (int i = 0; i < state.cuerdas.size(); i++) {
-            nodos[i] = toNumber(state.cuerdas.get(i).get("nodos")).intValue();
+            nodos[i] = state.cuerdas.get(i).get("nodos").intValue();
             sumNodos += nodos[i];
         }
 
         Float[] masaPorNodo = new Float[sumNodos];
         int v = 0;
         float numeroMagico = 335.52f;
-        Float ordenMasa = toNumber(state.ordenMasa).floatValue();
+        Float ordenMasa = state.ordenMasa;
 
         for (int i = 0; i < state.cuerdas.size(); i++) {
-            Float frecuencia = toNumber(state.cuerdas.get(i).get("frecuencia")).floatValue();
+            Float frecuencia = state.cuerdas.get(i).get("frecuencia");
             Double masa = Math.pow((frecuencia * nodos[i]) / (numeroMagico * 512), 2);
 
             if (masa >= .9) masa = 0.9;
@@ -95,7 +95,7 @@ public class MetaAlgorithms {
         Integer[] nodos = new Integer[state.cuerdas.size()];
         Integer sumNodos = 0;
         for (int i = 0; i < state.cuerdas.size(); i++) {
-            nodos[i] = toNumber(state.cuerdas.get(i).get("nodos")).intValue();
+            nodos[i] = state.cuerdas.get(i).get("nodos").intValue();
             sumNodos += nodos[i];
         }
 
@@ -105,9 +105,9 @@ public class MetaAlgorithms {
         for (int j = 0; j < state.cuerdas.size(); ++j) {
             Integer ultimo = nodos[j].intValue();
 
-            Float orden = toNumber(state.cuerdas.get(j).get("anchoPuntas")).floatValue();
-            Float fricc = toNumber(state.cuerdas.get(j).get(("friccion"))).floatValue();
-            Float maxFriccionEnPunta = toNumber(state.cuerdas.get(j).get(("maxFriccionEnPunta"))).floatValue();
+            Float orden = state.cuerdas.get(j).get("anchoPuntas");
+            Float fricc = state.cuerdas.get(j).get(("friccion"));
+            Float maxFriccionEnPunta = state.cuerdas.get(j).get(("maxFriccionEnPunta"));
             for (int i = 0; i < ultimo; ++i) {
 
                 Double factor =
@@ -130,12 +130,12 @@ public class MetaAlgorithms {
 
     // USA: dedoSize, maxp, expp
     private static Consumer<State> frictionWithFinger = state ->  {
-        Integer dedoSize = toNumber(state.dedoSize).intValue();
+        Integer dedoSize = state.dedoSize.intValue();
 
         Float[] friccionConDedo = new Float[dedoSize];
 
-        Double maxp = toNumber(state.maxp).doubleValue();
-        Double expp = toNumber(state.expp).doubleValue();
+        Double maxp = state.maxp.doubleValue();
+        Double expp = state.expp.doubleValue();
         Integer centro = dedoSize / 2;
         for (int i = 0; i < dedoSize; i++) {
             float fi=i;
@@ -157,15 +157,15 @@ public class MetaAlgorithms {
         Integer cantMaximaNodos = -1;
         Integer[] nodos = new Integer[state.cuerdas.size()];
         for (int i = 0; i < state.cuerdas.size(); i++) {
-            nodos[i] = toNumber(state.cuerdas.get(i).get("nodos")).intValue();
+            nodos[i] = state.cuerdas.get(i).get("nodos").intValue();
             if (cantMaximaNodos < nodos[i]) cantMaximaNodos = nodos[i];
         }
 
         Float[] minimosYtrastes = new Float[state.cuerdas.size() * cantMaximaNodos];
 
         for (int j = 0; j < state.cuerdas.size(); j++) {
-            Float distanciaCuerdaDiapason = toNumber(state.cuerdas.get(j).get("distanciaCuerdaDiapason")).floatValue();
-            Float distanciaCuerdaTraste = toNumber(state.cuerdas.get(j).get("distanciaCuerdaTraste")).floatValue();
+            Float distanciaCuerdaDiapason = state.cuerdas.get(j).get("distanciaCuerdaDiapason");
+            Float distanciaCuerdaTraste = state.cuerdas.get(j).get("distanciaCuerdaTraste");
             for (int i = 0; i < nodos[j]; i++) {
                 if (i < nodos[j] / 2) {
                     minimosYtrastes[i + j * cantMaximaNodos] = distanciaCuerdaDiapason;

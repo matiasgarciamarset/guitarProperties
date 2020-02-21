@@ -4,14 +4,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-import com.example.propiedadesguitarra2.converters.NumberConverter;
-import com.example.propiedadesguitarra2.model.Pair;
-
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class SimpleTextComponent {
     private EditText field;
-    private BiConsumer<Integer, Integer> onChangeMethod;
+    private boolean decimal = true;
+    private Consumer<Float> onChangeMethod;
 
     public SimpleTextComponent(EditText field) {
         this.field = field;
@@ -19,11 +17,18 @@ public class SimpleTextComponent {
         field.addTextChangedListener(onSimpleFieldChange());
     }
 
-    public void update(Pair<Integer, Integer> number) {
-        field.setText(NumberConverter.prettyPrint(number));
+    public SimpleTextComponent(EditText field, Boolean decimal) {
+        this.field = field;
+        this.decimal = decimal;
+
+        field.addTextChangedListener(onSimpleFieldChange());
     }
 
-    public void onChange(BiConsumer<Integer, Integer> method) {
+    public void update(Float number) {
+        field.setText(decimal ? number.toString() : String.valueOf(number.intValue()));
+    }
+
+    public void onChange(Consumer<Float> method) {
         this.onChangeMethod = method;
     }
 
@@ -37,21 +42,11 @@ public class SimpleTextComponent {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 0 || s.toString().equals("-")) {
-                    onChangeMethod.accept(0, 0);
-                    return;
+                try {
+                    onChangeMethod.accept(Float.parseFloat(s.toString()));
+                } catch (Exception e) {
+                    System.out.println("No se puede convertir valor a float: " + s.toString());
                 }
-                String[] split = s.toString().split("\\.");
-                Integer coef;
-                Integer exp;
-                if (split.length == 1) {
-                    coef = Integer.parseInt(split[0]);
-                    exp = 0;
-                } else {
-                    coef = Integer.parseInt(split[0].concat(split[1]));
-                    exp = split[1].length() * -1;
-                }
-                onChangeMethod.accept(coef, exp);
             }
         };
     }
