@@ -1,27 +1,25 @@
 package com.example.propiedadesguitarra2.ui.propiedadescuerda;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.propiedadesguitarra2.R;
 import com.example.propiedadesguitarra2.StateManager;
 import com.example.propiedadesguitarra2.components.NumberComponent;
 import com.example.propiedadesguitarra2.components.SimpleTextComponent;
-import com.example.propiedadesguitarra2.model.Pair;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -52,6 +50,19 @@ public class PropiedadesCuerdaFragment extends Fragment {
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        // Obtengo tamano de pantalla
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        System.out.println("Resolucion en ancho " + width);
+        // Si la pantalla es chica, elimino texts no necesarios
+        if (width < 900) {
+            ((TextView) getView().findViewById(R.id.textFactor122)).setText("F");
+            ((TextView) getView().findViewById(R.id.textFactor123)).setText("F");
+            ((TextView) getView().findViewById(R.id.textFactor124)).setText("F");
+            ((TextView) getView().findViewById(R.id.textFactor126)).setText("F");
+        }
 
         cuerda = (Spinner) getView().findViewById(R.id.cuerdaSpi);
         cuerda.setSelection(0, true);

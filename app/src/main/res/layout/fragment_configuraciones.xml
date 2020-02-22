@@ -5,12 +5,12 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="50dp"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:gravity="clip_vertical"
         android:orientation="vertical">
 
@@ -18,19 +18,13 @@
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Estas configuraciones requieren guardar y luego reiniciar:"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="Estas configuraciones requieren guardar y luego reiniciar:" />
 
-        <LinearLayout
+        <com.example.propiedadesguitarra2.components.AutoGridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center|left"
-            android:orientation="horizontal">
+            android:columnCount="2"
+            app:columnWidth="200dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -56,6 +50,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -75,19 +70,10 @@
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center|left"
-            android:orientation="horizontal">
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -108,6 +94,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="20dp"
                 android:orientation="vertical">
 
                 <Switch
@@ -125,19 +112,11 @@
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center|left"
-            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -158,6 +137,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -175,19 +155,10 @@
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center|left"
-            android:orientation="horizontal">
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -208,6 +179,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -225,7 +197,8 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+        </com.example.propiedadesguitarra2.components.AutoGridLayout>
 
     </LinearLayout>
+
 </ScrollView>

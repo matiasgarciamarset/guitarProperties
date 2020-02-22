@@ -1,178 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="fill_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_marginBottom="60dp">
 
-    <LinearLayout
+    <com.example.propiedadesguitarra2.components.AutoGridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="clip_vertical"
-        android:orientation="vertical">
+        android:columnCount="2"
+        app:columnWidth="200dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="Escala intensidad" />
 
-                <TextView
-                    android:id="@+id/textView11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Escala intensidad" />
-
-                <EditText
-                    android:id="@+id/escalaIntensidadText"
-                    android:layout_width="163dp"
-                    android:layout_height="52dp"
-                    android:ems="10"
-                    android:inputType="number" />
-            </LinearLayout>
+            <EditText
+                android:id="@+id/escalaIntensidadText"
+                android:layout_width="163dp"
+                android:layout_height="52dp"
+                android:ems="10"
+                android:inputType="number" />
+        </LinearLayout>
 
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical">
+                android:text="Distancia entre nodos" />
 
-                <TextView
-                    android:id="@+id/textView17"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Distancia entre nodos" />
+            <EditText
+                android:id="@+id/distanciaEntreNodosText"
+                android:layout_width="162dp"
+                android:layout_height="52dp"
+                android:ems="10"
+                android:inputType="number" />
+        </LinearLayout>
 
-                <EditText
-                    android:id="@+id/distanciaEntreNodosText"
-                    android:layout_width="162dp"
-                    android:layout_height="52dp"
-                    android:ems="10"
-                    android:inputType="number" />
-            </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Centro"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/centroText"
+                android:layout_width="162dp"
+                android:layout_height="52dp"
+                android:ems="10"
+                android:inputType="number" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
 
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="Distancia equilibrio resorte"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/textView18"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Centro"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/centroText"
-                    android:layout_width="162dp"
-                    android:layout_height="52dp"
-                    android:ems="10"
-                    android:inputType="number" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Distancia equilibrio resorte"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/distanciaEquilibrioResorteText"
-                    android:layout_width="162dp"
-                    android:layout_height="52dp"
-                    android:ems="10"
-                    android:inputType="number" />
-            </LinearLayout>
-
+            <EditText
+                android:id="@+id/distanciaEquilibrioResorteText"
+                android:layout_width="162dp"
+                android:layout_height="52dp"
+                android:ems="10"
+                android:inputType="number" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/textView20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="Expp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/textView20"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Expp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/exppText"
-                    android:layout_width="162dp"
-                    android:layout_height="52dp"
-                    android:ems="10"
-                    android:inputType="number" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView19"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Maxp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/maxpText"
-                    android:layout_width="162dp"
-                    android:layout_height="52dp"
-                    android:ems="10"
-                    android:inputType="number" />
-            </LinearLayout>
-
+            <EditText
+                android:id="@+id/exppText"
+                android:layout_width="162dp"
+                android:layout_height="52dp"
+                android:ems="10"
+                android:inputType="number" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Maxp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/maxpText"
+                android:layout_width="162dp"
+                android:layout_height="52dp"
+                android:ems="10"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
             android:orientation="vertical">
 
             <TextView
@@ -191,5 +163,6 @@
                 android:inputType="number" />
         </LinearLayout>
 
-    </LinearLayout>
+    </com.example.propiedadesguitarra2.components.AutoGridLayout>
+
 </ScrollView>

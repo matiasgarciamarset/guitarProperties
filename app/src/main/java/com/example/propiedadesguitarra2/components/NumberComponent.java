@@ -5,9 +5,6 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.SeekBar;
 
-import com.example.propiedadesguitarra2.converters.NumberConverter;
-import com.example.propiedadesguitarra2.model.Pair;
-
 import java.util.function.Consumer;
 
 public class NumberComponent {
