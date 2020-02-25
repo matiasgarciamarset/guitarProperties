@@ -14,9 +14,6 @@ public class MetaAlgorithms {
      * Recalcula la matriz correspondiente dependiendo del valor editado
      */
     public Boolean generate(String attributeName, State state) {
-        if (!wasChanged(state)) {
-            return false;
-        }
         switch (attributeName) {
             case "frecuencia":
                 defineMassByNode.accept(state);
@@ -187,14 +184,4 @@ public class MetaAlgorithms {
     private static BigDecimal toNumber(Pair<Integer, Integer> value) {
         return new BigDecimal(value.first * Math.pow(10, value.second));
     }
-
-    private boolean wasChanged(State state) {
-        int hash = state.hashCode();
-        if (lasUsedStateHash == null || hash != lasUsedStateHash) {
-            lasUsedStateHash = hash;
-            return true;
-        }
-        return false;
-    }
-
 }

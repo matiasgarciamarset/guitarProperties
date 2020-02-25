@@ -21,6 +21,7 @@ public class State implements Serializable {
     public Float softrealtimeRefresh = 200f;
     public Boolean debugMode = false;
     public Boolean imprimir = true;
+    public Float btBufferSize = 2048f;
 
     // Configuraciones real-time
     public Float escalaIntensidad = 1f;

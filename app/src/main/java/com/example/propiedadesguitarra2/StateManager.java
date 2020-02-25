@@ -117,13 +117,14 @@ public class StateManager {
 
         // Envio variable
         String content = NumberCompressor.generateValue(variableName, value);
+        System.out.println(content);
         if (content != null) bService.write(content.getBytes());
 
         return true;
     }
 
     public void connectBluetooth(BluetoothDevice device, Handler method) {
-        bService.connect(device);
+        bService.connect(device, state.btBufferSize.intValue());
         bService.onConnectionStatusChange(method);
     }
 }

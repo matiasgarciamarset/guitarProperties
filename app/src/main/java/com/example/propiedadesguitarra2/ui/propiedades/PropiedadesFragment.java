@@ -68,7 +68,7 @@ public class PropiedadesFragment extends Fragment {
         maxpText = new SimpleTextComponent((EditText) getView().findViewById(R.id.maxpText));
         maxpText.onChange(v -> {
             stateManager.state.maxp = v;
-            stateManager.sendValueByBluetooth("maxṕ", v);
+            stateManager.sendValueByBluetooth("maxp", v);
         });
 
         exppText = new SimpleTextComponent((EditText) getView().findViewById(R.id.exppText));

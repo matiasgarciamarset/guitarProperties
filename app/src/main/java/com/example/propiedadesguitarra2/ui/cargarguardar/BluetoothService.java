@@ -69,7 +69,7 @@ public class BluetoothService {
         mNewState = mState;
     }
 
-    public synchronized void connect(BluetoothDevice device) {
+    public synchronized void connect(BluetoothDevice device, int buffer_size) {
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
             if (mConnectThread != null) {
@@ -85,7 +85,7 @@ public class BluetoothService {
         }
 
         // Start the thread to connect with the given device
-        mConnectThread = new ConnectThread(device);
+        mConnectThread = new ConnectThread(device, buffer_size);
         mConnectThread.start();
         publicStatusChange("device", device.getName());
     }
@@ -130,7 +130,7 @@ public class BluetoothService {
      *
      * @param socket The BluetoothSocket on which the connection was made
      */
-    private synchronized void connected(BluetoothSocket socket) {
+    private synchronized void connected(BluetoothSocket socket, int buffer_size) {
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {
             mConnectThread.cancel();
@@ -144,7 +144,7 @@ public class BluetoothService {
         }
 
         // Start the thread to manage the connection and perform transmissions
-        mConnectedThread = new ConnectedThread(socket);
+        mConnectedThread = new ConnectedThread(socket, buffer_size);
         mConnectedThread.start();
     }
 
@@ -156,9 +156,11 @@ public class BluetoothService {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
+        private int buffer_size;
 
-        public ConnectedThread(BluetoothSocket socket) {
+        public ConnectedThread(BluetoothSocket socket, int buffer_size) {
             mmSocket = socket;
+            this.buffer_size = buffer_size;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
@@ -197,9 +199,14 @@ public class BluetoothService {
         }
 
         public Boolean write(byte[] buffer) {
+            int size = buffer.length;
             try {
-                mmOutStream.write(buffer);
-
+                int i = 0;
+                while (i < size) {
+                    int len = Math.min(buffer_size, size - i);
+                    mmOutStream.write(buffer, i, len);
+                    i += len;
+                }
                 return true;
             } catch (IOException e) {
                 return false;
@@ -223,9 +230,11 @@ public class BluetoothService {
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
+        private final int buffer_size;
 
-        public ConnectThread(BluetoothDevice device) {
+        public ConnectThread(BluetoothDevice device, int buffer_size) {
             mmDevice = device;
+            this.buffer_size = buffer_size;
             BluetoothSocket tmp = null;
 
             // Get a BluetoothSocket for a connection with the
@@ -274,7 +283,7 @@ public class BluetoothService {
             }
 
             // Start the connected thread
-            connected(mmSocket);
+            connected(mmSocket, buffer_size);
         }
 
         public void cancel() {

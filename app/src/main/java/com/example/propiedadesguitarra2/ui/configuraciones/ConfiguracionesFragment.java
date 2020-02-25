@@ -28,6 +28,7 @@ public class ConfiguracionesFragment extends Fragment {
     private SimpleTextComponent npotText;
     private SimpleTextComponent dedoSizeText;
     private SimpleTextComponent softrealtimeRefreshText;
+    private SimpleTextComponent btBufferSizeText;
     private Switch debugModeSwitch;
     private Switch imprimirSwitch;
 
@@ -53,6 +54,7 @@ public class ConfiguracionesFragment extends Fragment {
         softrealtimeRefreshText = new SimpleTextComponent((EditText) getView().findViewById(R.id.softrealtimeRefreshText), false);
         debugModeSwitch = (Switch) getView().findViewById(R.id.debugModeSwitch);
         imprimirSwitch = (Switch) getView().findViewById(R.id.imprimirSwitch);
+        btBufferSizeText =  new SimpleTextComponent((EditText) getView().findViewById(R.id.btBufferSizeText), false);
 
         // Guardo cambios en State
         // Como estas variables se aplican solo despues de reiniciar, no se envian al dispositivo hasta que se guarda y luego reinicia
@@ -65,6 +67,7 @@ public class ConfiguracionesFragment extends Fragment {
         softrealtimeRefreshText.onChange(v -> stateManager.state.softrealtimeRefresh = v);
         debugModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.debugMode = isChecked);
         imprimirSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.imprimir = isChecked);
+        btBufferSizeText.onChange(v -> stateManager.state.btBufferSize = v);
 
         // Cargo cambios
         nFramesText.update(stateManager.state.nFrames);
@@ -76,5 +79,6 @@ public class ConfiguracionesFragment extends Fragment {
         softrealtimeRefreshText.update(stateManager.state.softrealtimeRefresh);
         debugModeSwitch.setChecked(stateManager.state.debugMode);
         imprimirSwitch.setChecked(stateManager.state.imprimir);
+        btBufferSizeText.update(stateManager.state.btBufferSize);
     }
 }

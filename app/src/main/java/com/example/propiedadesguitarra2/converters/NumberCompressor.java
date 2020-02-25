@@ -67,9 +67,9 @@ public class NumberCompressor {
         return START_CHARACTER  +
                 numberAssignator.get(variableName) + ":[" +
                 Arrays.stream(list)
-                .map(NumberConverter::serialize)
-                .collect(Collectors.joining(","))
-                + "]"+END_CHARACTER;
+                    .map(NumberConverter::serialize)
+                    .collect(Collectors.joining(","))
+                + "]" + END_CHARACTER;
     }
 
     public static String generateValue(String variableName, Float value) {
