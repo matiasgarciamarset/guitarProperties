@@ -131,12 +131,11 @@
                     android:text="Eliminar" />
 
                 <Button
-                    android:id="@+id/exportarButton"
+                    android:id="@+id/mostrarButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:enabled="false"
-                    android:text="Exportar" />
+                    android:text="Mostrar" />
 
             </LinearLayout>
 

@@ -92,9 +92,7 @@ public class PropiedadesCuerdaFragment extends Fragment {
                 (EditText) getView().findViewById(R.id.anchoPuntaFactor),
                 (SeekBar) getView().findViewById(R.id.anchoPuntaBar));
 
-        anchoPuntas.onChange(v ->
-                getSelectedString().forEach(cuerda ->
-                        cuerda.put("anchoPuntas", v)));
+        anchoPuntas.onChange(v -> updateAndSend("anchoPuntas", v));
 
         // Max fricc puntas
         this.maxFriccPuntas = new NumberComponent(
@@ -102,9 +100,7 @@ public class PropiedadesCuerdaFragment extends Fragment {
                 (EditText) getView().findViewById(R.id.maxFriccPuntasFactor),
                 (SeekBar) getView().findViewById(R.id.maxFriccPuntasBar));
 
-        maxFriccPuntas.onChange(v ->
-                getSelectedString().forEach(cuerda ->
-                        cuerda.put("maxFriccionEnPunta", v)));
+        maxFriccPuntas.onChange(v -> updateAndSend("maxFriccionEnPunta", v));
 
         // Otros
         nodosText = new SimpleTextComponent((EditText) getView().findViewById(R.id.nodosText), false);
@@ -131,6 +127,7 @@ public class PropiedadesCuerdaFragment extends Fragment {
 
     private void updateAndSend(String variable, Float value) {
         getSelectedString().forEach(cuerda -> cuerda.put(variable, value));
+        stateManager.runAlgorithms(variable);
         stateManager.sendValueByBluetooth(variable, value);
     }
 

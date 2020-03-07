@@ -38,7 +38,7 @@ public class NumberComponent {
             }
         });
 
-        this.numeroEditBox.setOnClickListener(v -> this.numeroBar.setProgress(500));
+        this.numeroEditBox.setOnClickListener(v -> this.numeroBar.setProgress(50));
 
         this.factor.addTextChangedListener(new TextWatcher() {
             @Override
@@ -61,8 +61,10 @@ public class NumberComponent {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                value += (progress > prev_value? realFactor : (progress == prev_value ? 0 :-realFactor));
-                NumberComponent.this.numeroEditBox.setText(value.toString());
+                if (fromUser) {
+                    value += (progress > prev_value? realFactor : (progress == prev_value ? 0 :-realFactor));
+                    NumberComponent.this.numeroEditBox.setText(String.format("%f", value));
+                }
                 prev_value = progress;
             }
 
@@ -99,8 +101,22 @@ public class NumberComponent {
     }
 
     public void update(Float value) {
-        numeroEditBox.setText(value.toString());
-        NumberComponent.this.realFactor = 1f;
-        factor.setText("1");
+        String number = String.format("%f", value);
+        numeroEditBox.setText(number);
+        NumberComponent.this.realFactor = firstSignificantDecimal(number);
+        factor.setText(String.format("%f", NumberComponent.this.realFactor));
+    }
+
+    private Float firstSignificantDecimal(String number) {
+        try {
+            int pos = 0;
+            while (pos < number.length() && (number.charAt(pos) == '0' || number.charAt(pos) == '.'))
+                pos++;
+            // Check is a valid float
+            Float factor = Float.valueOf(number.substring(0, pos) + '1');
+            return factor;
+        } catch (Exception e) {
+            return 1f;
+        }
     }
 }

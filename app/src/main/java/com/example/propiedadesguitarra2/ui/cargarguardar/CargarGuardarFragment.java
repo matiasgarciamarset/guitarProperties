@@ -27,6 +27,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.propiedadesguitarra2.R;
 import com.example.propiedadesguitarra2.StateManager;
+import com.example.propiedadesguitarra2.converters.StateFormater;
 
 
 public class CargarGuardarFragment extends Fragment {
@@ -36,6 +37,7 @@ public class CargarGuardarFragment extends Fragment {
     private EditText guardarText;
     private Button guardar;
     private Button eliminar;
+    private Button mostrar;
 
     private BluetoothAdapter mBluetoothAdapter;
     private Button bluetoothButton;
@@ -72,6 +74,15 @@ public class CargarGuardarFragment extends Fragment {
                 Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
                 startActivityForResult(serverIntent, 1);
             }
+        });
+
+        mostrar = (Button) getView().findViewById(R.id.mostrarButton);
+
+        mostrar.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(StateFormater.prettyPrint(stateManager.state))
+                    .setNegativeButton("Cancelar", (dialog, id) -> {
+                    }).show();
         });
 
         // Cargo archivos guardados

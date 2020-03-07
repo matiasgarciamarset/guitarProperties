@@ -49,7 +49,7 @@ public class ConfiguracionesFragment extends Fragment {
         sampleRateText = new SimpleTextComponent((EditText) getView().findViewById(R.id.sampleRateText), false);
         nbuferiiText = new SimpleTextComponent((EditText) getView().findViewById(R.id.nbuferiiText), false);
         canalesEntradaText = new SimpleTextComponent((EditText) getView().findViewById(R.id.canalesEntradaText), false);
-        npotText = new SimpleTextComponent((EditText) getView().findViewById(R.id.npotText));
+        npotText = new SimpleTextComponent((EditText) getView().findViewById(R.id.npotText), false);
         dedoSizeText = new SimpleTextComponent((EditText) getView().findViewById(R.id.dedoSizeText), false);
         softrealtimeRefreshText = new SimpleTextComponent((EditText) getView().findViewById(R.id.softrealtimeRefreshText), false);
         debugModeSwitch = (Switch) getView().findViewById(R.id.debugModeSwitch);

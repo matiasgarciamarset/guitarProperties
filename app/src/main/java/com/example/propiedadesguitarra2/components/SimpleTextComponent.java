@@ -26,7 +26,7 @@ public class SimpleTextComponent {
 
     public void update(Float number) {
         if (number != null) {
-            field.setText(decimal ? number.toString() : String.valueOf(number.intValue()));
+            field.setText(decimal ? String.format("%f", number) : String.valueOf(number.intValue()));
         } else {
             field.setText("0");
         }

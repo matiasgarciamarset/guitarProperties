@@ -4,8 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
 
-import com.example.propiedadesguitarra2.converters.NumberCompressor;
-import com.example.propiedadesguitarra2.model.Pair;
+import com.example.propiedadesguitarra2.converters.StateFormater;
 import com.example.propiedadesguitarra2.model.State;
 import com.example.propiedadesguitarra2.storage.LocalStorageManager;
 import com.example.propiedadesguitarra2.ui.cargarguardar.BluetoothService;
@@ -74,12 +73,16 @@ public class StateManager {
             return false;
         }
 
-        String allVariables = NumberCompressor.compressAll(state);
+        String allVariables = StateFormater.compressAll(state);
         if (allVariables.length() > 0) {
             byte[] send = allVariables.getBytes();
             bService.write(send);
         }
         return true;
+    }
+
+    public Boolean runAlgorithms(String variableName) {
+        return metaAlgorithms.generate(variableName, state);
     }
 
     public Boolean sendValueByBluetooth(String variableName, Float value) {
@@ -89,34 +92,32 @@ public class StateManager {
         }
 
         // Envio variables generadas si corresponde
-        if (metaAlgorithms.generate(variableName, state)) {
-            if (state.masaPorNodoEdited) {
-                String send = NumberCompressor.generateValue("masaPorNodo", state.masaPorNodo);
-                if (send != null) bService.write(send.getBytes());
-                state.masaPorNodoEdited = false;
-            }
+        if (state.masaPorNodoEdited) {
+            String send = StateFormater.generateValue("masaPorNodo", state.masaPorNodo);
+            if (send != null) bService.write(send.getBytes());
+            state.masaPorNodoEdited = false;
+        }
 
-            if (state.friccionSinDedoEdited) {
-                String send = NumberCompressor.generateValue("friccionSinDedo", state.friccionSinDedo);
-                if (send != null) bService.write(send.getBytes());
-                state.friccionSinDedoEdited = false;
-            }
+        if (state.friccionSinDedoEdited) {
+            String send = StateFormater.generateValue("friccionSinDedo", state.friccionSinDedo);
+            if (send != null) bService.write(send.getBytes());
+            state.friccionSinDedoEdited = false;
+        }
 
-            if (state.friccionConDedoEdited) {
-                String send = NumberCompressor.generateValue("friccionConDedo", state.friccionConDedo);
-                if (send != null) bService.write(send.getBytes());
-                state.friccionConDedoEdited = false;
-            }
+        if (state.friccionConDedoEdited) {
+            String send = StateFormater.generateValue("friccionConDedo", state.friccionConDedo);
+            if (send != null) bService.write(send.getBytes());
+            state.friccionConDedoEdited = false;
+        }
 
-            if (state.minimosYtrastesEdited) {
-                String send = NumberCompressor.generateValue("minimosYtrastes", state.minimosYtrastes);
-                if (send != null) bService.write(send.getBytes());
-                state.minimosYtrastesEdited = false;
-            }
+        if (state.minimosYtrastesEdited) {
+            String send = StateFormater.generateValue("minimosYtrastes", state.minimosYtrastes);
+            if (send != null) bService.write(send.getBytes());
+            state.minimosYtrastesEdited = false;
         }
 
         // Envio variable
-        String content = NumberCompressor.generateValue(variableName, value);
+        String content = StateFormater.generateValue(variableName, value);
         System.out.println(content);
         if (content != null) bService.write(content.getBytes());
 

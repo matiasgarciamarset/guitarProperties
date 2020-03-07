@@ -44,42 +44,49 @@ public class PropiedadesFragment extends Fragment {
         escalaIntensidadText = new SimpleTextComponent((EditText) getView().findViewById(R.id.escalaIntensidadText));
         escalaIntensidadText.onChange(v -> {
             stateManager.state.escalaIntensidad = v;
+            stateManager.runAlgorithms("escalaIntensidad");
             stateManager.sendValueByBluetooth("escalaIntensidad", v);
         });
 
         distanciaEquilibrioResorteText = new SimpleTextComponent((EditText) getView().findViewById(R.id.distanciaEquilibrioResorteText));
         distanciaEquilibrioResorteText.onChange(v -> {
             stateManager.state.distanciaEquilibrioResorte = v;
+            stateManager.runAlgorithms("distanciaEquilibrioResorte");
             stateManager.sendValueByBluetooth("distanciaEquilibrioResorte", v);
         });
 
         distanciaEntreNodosText = new SimpleTextComponent((EditText) getView().findViewById(R.id.distanciaEntreNodosText));
         distanciaEntreNodosText.onChange(v -> {
             stateManager.state.distanciaEntreNodos = v;
+            stateManager.runAlgorithms("distanciaEntreNodos");
             stateManager.sendValueByBluetooth("distanciaEntreNodos", v);
         });
 
         centroText = new SimpleTextComponent((EditText) getView().findViewById(R.id.centroText));
         centroText.onChange(v -> {
             stateManager.state.centro = v;
+            stateManager.runAlgorithms("centro");
             stateManager.sendValueByBluetooth("centro", v);
         });
 
         maxpText = new SimpleTextComponent((EditText) getView().findViewById(R.id.maxpText));
         maxpText.onChange(v -> {
             stateManager.state.maxp = v;
+            stateManager.runAlgorithms("maxp");
             stateManager.sendValueByBluetooth("maxp", v);
         });
 
         exppText = new SimpleTextComponent((EditText) getView().findViewById(R.id.exppText));
         exppText.onChange(v -> {
             stateManager.state.expp = v;
+            stateManager.runAlgorithms("expp");
             stateManager.sendValueByBluetooth("expp", v);
         });
 
         ordenMasaText = new SimpleTextComponent((EditText) getView().findViewById(R.id.ordenMasaText));
         ordenMasaText.onChange(v -> {
             stateManager.state.ordenMasa = v;
+            stateManager.runAlgorithms("ordenMasa");
             stateManager.sendValueByBluetooth("ordenMasa", v);
         });
 
