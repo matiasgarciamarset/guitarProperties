@@ -65,14 +65,14 @@ public class MetaAlgorithms {
 
         for (int i = 0; i < state.cuerdas.size(); i++) {
             Float frecuencia = state.cuerdas.get(i).get("frecuencia");
-            Double masa = Math.pow((frecuencia * nodos[i]) / (numeroMagico * 512), 2);
+            Double masa = Math.pow(((frecuencia * nodos[i]) / (numeroMagico * 512)), 2);
 
             if (masa >= .9) {
                 System.out.println("El valor de masa se va de lo permitido, reseteando a 0.9");
                 masa = .9;
             }
 
-            Double ordenXmasa = ordenMasa * masa;
+            Float ordenXmasa = ordenMasa * masa.floatValue();
             for (int j = 0; j < nodos[i]; ++j) {
                 Double result = masa - (1.0 - Math.random()) * ordenXmasa;
                 masaPorNodo[v] = result.floatValue();

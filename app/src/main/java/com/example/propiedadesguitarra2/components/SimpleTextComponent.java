@@ -8,20 +8,22 @@ import java.util.function.Consumer;
 
 public class SimpleTextComponent {
     private EditText field;
-    private boolean decimal = true;
+    private boolean decimal;
     private Consumer<Float> onChangeMethod;
+    private Float previousValue = null;
 
-    public SimpleTextComponent(EditText field) {
-        this.field = field;
-
-        field.addTextChangedListener(onSimpleFieldChange());
+    public SimpleTextComponent() {
     }
 
-    public SimpleTextComponent(EditText field, Boolean decimal) {
+    public SimpleTextComponent setView(EditText field) {
         this.field = field;
-        this.decimal = decimal;
 
         field.addTextChangedListener(onSimpleFieldChange());
+        return this;
+    }
+
+    public SimpleTextComponent(Boolean decimal) {
+        this.decimal = decimal;
     }
 
     public void update(Float number) {
@@ -47,7 +49,11 @@ public class SimpleTextComponent {
             @Override
             public void afterTextChanged(Editable s) {
                 try {
-                    onChangeMethod.accept(Float.parseFloat(s.toString()));
+                    Float number = Float.parseFloat(s.toString());
+                    if (!number.equals(previousValue)) {
+                        onChangeMethod.accept(number);
+                        previousValue = number;
+                    }
                 } catch (Exception e) {
                     System.out.println("No se puede convertir valor a float: " + s.toString());
                 }

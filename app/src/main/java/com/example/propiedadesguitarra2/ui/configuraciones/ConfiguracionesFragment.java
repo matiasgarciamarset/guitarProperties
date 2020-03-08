@@ -21,14 +21,14 @@ public class ConfiguracionesFragment extends Fragment {
 
     private StateManager stateManager;
 
-    private SimpleTextComponent nFramesText;
-    private SimpleTextComponent sampleRateText;
-    private SimpleTextComponent nbuferiiText;
-    private SimpleTextComponent canalesEntradaText;
-    private SimpleTextComponent npotText;
-    private SimpleTextComponent dedoSizeText;
-    private SimpleTextComponent softrealtimeRefreshText;
-    private SimpleTextComponent btBufferSizeText;
+    private SimpleTextComponent nFramesText = new SimpleTextComponent(false);
+    private SimpleTextComponent sampleRateText = new SimpleTextComponent(false);
+    private SimpleTextComponent nbuferiiText = new SimpleTextComponent(false);
+    private SimpleTextComponent canalesEntradaText = new SimpleTextComponent(false);
+    private SimpleTextComponent npotText = new SimpleTextComponent(false);
+    private SimpleTextComponent dedoSizeText = new SimpleTextComponent(false);
+    private SimpleTextComponent softrealtimeRefreshText = new SimpleTextComponent(false);
+    private SimpleTextComponent btBufferSizeText =  new SimpleTextComponent(false);
     private Switch debugModeSwitch;
     private Switch imprimirSwitch;
 
@@ -45,16 +45,16 @@ public class ConfiguracionesFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        nFramesText = new SimpleTextComponent((EditText) getView().findViewById(R.id.nFramesText), false);
-        sampleRateText = new SimpleTextComponent((EditText) getView().findViewById(R.id.sampleRateText), false);
-        nbuferiiText = new SimpleTextComponent((EditText) getView().findViewById(R.id.nbuferiiText), false);
-        canalesEntradaText = new SimpleTextComponent((EditText) getView().findViewById(R.id.canalesEntradaText), false);
-        npotText = new SimpleTextComponent((EditText) getView().findViewById(R.id.npotText), false);
-        dedoSizeText = new SimpleTextComponent((EditText) getView().findViewById(R.id.dedoSizeText), false);
-        softrealtimeRefreshText = new SimpleTextComponent((EditText) getView().findViewById(R.id.softrealtimeRefreshText), false);
+        nFramesText.setView((EditText) getView().findViewById(R.id.nFramesText));
+        sampleRateText.setView((EditText) getView().findViewById(R.id.sampleRateText));
+        nbuferiiText.setView((EditText) getView().findViewById(R.id.nbuferiiText));
+        canalesEntradaText.setView((EditText) getView().findViewById(R.id.canalesEntradaText));
+        npotText.setView((EditText) getView().findViewById(R.id.npotText));
+        dedoSizeText.setView((EditText) getView().findViewById(R.id.dedoSizeText));
+        softrealtimeRefreshText.setView((EditText) getView().findViewById(R.id.softrealtimeRefreshText));
         debugModeSwitch = (Switch) getView().findViewById(R.id.debugModeSwitch);
         imprimirSwitch = (Switch) getView().findViewById(R.id.imprimirSwitch);
-        btBufferSizeText =  new SimpleTextComponent((EditText) getView().findViewById(R.id.btBufferSizeText), false);
+        btBufferSizeText.setView((EditText) getView().findViewById(R.id.btBufferSizeText));
 
         // Guardo cambios en State
         // Como estas variables se aplican solo despues de reiniciar, no se envian al dispositivo hasta que se guarda y luego reinicia

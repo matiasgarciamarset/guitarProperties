@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +83,13 @@ public class CargarGuardarFragment extends Fragment {
 
         mostrar.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage(StateFormater.prettyPrint(stateManager.state))
+            Spanned mostrar = StateFormater.prettyPrint(stateManager.state);
+            builder.setMessage(mostrar)
+                    .setPositiveButton("Copiar", (dialog, id) -> {
+                        ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("", mostrar.toString());
+                        clipboard.setPrimaryClip(clip);
+                    })
                     .setNegativeButton("Cancelar", (dialog, id) -> {
                     }).show();
         });

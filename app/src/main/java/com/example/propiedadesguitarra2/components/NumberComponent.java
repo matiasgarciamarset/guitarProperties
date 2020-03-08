@@ -12,10 +12,11 @@ public class NumberComponent {
     private SeekBar numeroBar;
     private EditText factor;
     private Float realFactor;
+    private Float previousValue = null;
 
     private Consumer<Float> onChange = null;
 
-    public NumberComponent(EditText numeroEditBox, EditText factor, SeekBar numeroBar) {
+    public void setView(EditText numeroEditBox, EditText factor, SeekBar numeroBar) {
         this.numeroEditBox = numeroEditBox;
         this.factor = factor;
         this.numeroBar = numeroBar;
@@ -33,8 +34,14 @@ public class NumberComponent {
             @Override
             public void afterTextChanged(Editable s) {
                 if (onChange != null && NumberComponent.this.numeroEditBox.getText().length() > 0 &&
-                        !NumberComponent.this.numeroEditBox.getText().equals("-"))
-                    onChange.accept(Float.parseFloat(NumberComponent.this.numeroEditBox.getText().toString()));
+                        !NumberComponent.this.numeroEditBox.getText().equals("-")) {
+                    Float number = Float.parseFloat(NumberComponent.this.numeroEditBox.getText().toString());
+                    if (!number.equals(previousValue)) {
+                        onChange.accept(number);
+                        previousValue = number;
+                    }
+                }
+
             }
         });
 
@@ -75,6 +82,7 @@ public class NumberComponent {
                     try {
                         value = Float.parseFloat(number);
                     } catch(NumberFormatException e) {
+                        value = 0f;
                         NumberComponent.this.realFactor = 1f;
                     }
                 }
