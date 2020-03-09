@@ -19,7 +19,6 @@ app/src/main/java/com/example/propiedadesguitarra2/._storage
 app/src/main/java/com/example/propiedadesguitarra2/._ui
 app/src/main/java/com/example/propiedadesguitarra2/components/._AutoGridLayout.java
 app/src/main/java/com/example/propiedadesguitarra2/converters/._NumberConverter.java
-app/src/main/java/com/example/propiedadesguitarra2/converters/StateFormater.java
 app/src/main/java/com/example/propiedadesguitarra2/model/._Pair.java
 app/src/main/java/com/example/propiedadesguitarra2/ui/._cargarguardar
 app/src/main/java/com/example/propiedadesguitarra2/ui/._configuraciones
@@ -73,3 +72,4 @@ app/src/test/._java
 gradle/._wrapper
 gradle/wrapper/._gradle-wrapper.jar
 gradle/wrapper/._gradle-wrapper.properties
+local.properties
