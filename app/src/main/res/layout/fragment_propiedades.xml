@@ -163,6 +163,28 @@
                 android:inputType="number" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cantidad cuerdas"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/cantCuerdas"
+                android:layout_width="162dp"
+                android:layout_height="52dp"
+                android:ems="10"
+                android:inputType="number" />
+        </LinearLayout>
+
     </com.example.propiedadesguitarra2.components.AutoGridLayout>
 
 </ScrollView>

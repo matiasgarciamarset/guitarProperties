@@ -14,19 +14,19 @@ import android.widget.EditText;
 import com.example.propiedadesguitarra2.R;
 import com.example.propiedadesguitarra2.StateManager;
 import com.example.propiedadesguitarra2.components.SimpleTextComponent;
-import com.example.propiedadesguitarra2.model.Pair;
 
 
 public class PropiedadesFragment extends Fragment {
     private StateManager stateManager;
 
-    private SimpleTextComponent escalaIntensidadText = new SimpleTextComponent();
-    private SimpleTextComponent distanciaEquilibrioResorteText = new SimpleTextComponent();
-    private SimpleTextComponent distanciaEntreNodosText = new SimpleTextComponent();
-    private SimpleTextComponent centroText = new SimpleTextComponent();
-    private SimpleTextComponent maxpText = new SimpleTextComponent();
-    private SimpleTextComponent exppText = new SimpleTextComponent();
-    private SimpleTextComponent ordenMasaText = new SimpleTextComponent();
+    private SimpleTextComponent escalaIntensidadText = new SimpleTextComponent(true, 0f, 100f);
+    private SimpleTextComponent distanciaEquilibrioResorteText = new SimpleTextComponent(true, 0f, null);
+    private SimpleTextComponent distanciaEntreNodosText = new SimpleTextComponent(true, 0f, null);
+    private SimpleTextComponent centroText = new SimpleTextComponent(true, 0f, .5f);
+    private SimpleTextComponent maxpText = new SimpleTextComponent(true, 0f, 1f);
+    private SimpleTextComponent exppText = new SimpleTextComponent(true, 0f, null);
+    private SimpleTextComponent ordenMasaText = new SimpleTextComponent(true, 0f, .5f);
+    private SimpleTextComponent cantCuerdas =  new SimpleTextComponent(false, 0f, 50f);
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -90,6 +90,20 @@ public class PropiedadesFragment extends Fragment {
             stateManager.sendValueByBluetooth("ordenMasa", v);
         });
 
+        cantCuerdas.setView((EditText) getView().findViewById(R.id.cantCuerdas));
+        cantCuerdas.onFocusChange(v -> {
+            // Defino valores por defecto para nuevas cuerdas
+            for (int i = stateManager.state.cantCuerdas.intValue(); i < v; ++i)
+                stateManager.state.setDefaultValues(i);
+            // Si quito cuerdas, elimino las cuerdas correspondientes
+            for (int i = stateManager.state.cantCuerdas.intValue() - 1; v.intValue() < i; --i)
+                stateManager.state.cuerdas.remove(i);
+
+            stateManager.state.cantCuerdas = v;
+            stateManager.runAlgorithms("cantCuerdas");
+            stateManager.sendValueByBluetooth("cantCuerdas", v);
+        });
+
         updateAll();
     }
 
@@ -101,5 +115,6 @@ public class PropiedadesFragment extends Fragment {
         maxpText.update(stateManager.state.maxp);
         exppText.update(stateManager.state.expp);
         ordenMasaText.update(stateManager.state.ordenMasa);
+        cantCuerdas.update(stateManager.state.cantCuerdas);
     }
 }

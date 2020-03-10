@@ -21,14 +21,14 @@ public class ConfiguracionesFragment extends Fragment {
 
     private StateManager stateManager;
 
-    private SimpleTextComponent nFramesText = new SimpleTextComponent(false);
-    private SimpleTextComponent sampleRateText = new SimpleTextComponent(false);
-    private SimpleTextComponent nbuferiiText = new SimpleTextComponent(false);
-    private SimpleTextComponent canalesEntradaText = new SimpleTextComponent(false);
-    private SimpleTextComponent npotText = new SimpleTextComponent(false);
-    private SimpleTextComponent dedoSizeText = new SimpleTextComponent(false);
-    private SimpleTextComponent softrealtimeRefreshText = new SimpleTextComponent(false);
-    private SimpleTextComponent btBufferSizeText =  new SimpleTextComponent(false);
+    private SimpleTextComponent nFramesText = new SimpleTextComponent(false, 0f, null);
+    private SimpleTextComponent sampleRateText = new SimpleTextComponent(false, 44100f, 192000f);
+    private SimpleTextComponent nbuferiiText = new SimpleTextComponent(false, 32f, null);
+    private SimpleTextComponent canalesEntradaText = new SimpleTextComponent(false, 0f, null);
+    private SimpleTextComponent npotText = new SimpleTextComponent(false, 0f, null);
+    private SimpleTextComponent dedoSizeText = new SimpleTextComponent(false, 0f, null);
+    private SimpleTextComponent softrealtimeRefreshText = new SimpleTextComponent(false, 0f, null);
+    private SimpleTextComponent btBufferSizeText =  new SimpleTextComponent(false, 0f, null);
     private Switch debugModeSwitch;
     private Switch imprimirSwitch;
 

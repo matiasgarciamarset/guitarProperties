@@ -39,6 +39,7 @@ public class StateFormater {
         numberAssignator.put("friccionSinDedo", "17");
         numberAssignator.put("friccionConDedo", "18");
         numberAssignator.put("minimosYtrastes", "19");
+        numberAssignator.put("cantCuerdas", "20");
     }
 
     public static String compressAll(State state) {
@@ -62,11 +63,13 @@ public class StateFormater {
                 generateValue("masaPorNodo", state.masaPorNodo) + "," +
                 generateValue("friccionSinDedo", state.friccionSinDedo) + "," +
                 generateValue("friccionConDedo", state.friccionConDedo) + "," +
-                generateValue("minimosYtrastes", state.minimosYtrastes);
+                generateValue("minimosYtrastes", state.minimosYtrastes)+ "," +
+                generateValue("cantCuerdas", state.cantCuerdas);
     }
 
     public static Spanned prettyPrint(State state) {
         return Html.fromHtml("<small><ul>"+
+                printValue("cantCuerdas", state.cantCuerdas) + "\n" +
                 printValue("nFrames", state.nFrames) + "\n" +
                 printValue("samplerate", state.samplerate) + "\n" +
                 printValue("nbufferii", state.nbufferii) + "\n" +

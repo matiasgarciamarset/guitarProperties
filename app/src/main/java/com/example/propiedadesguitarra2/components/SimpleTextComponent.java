@@ -9,21 +9,45 @@ import java.util.function.Consumer;
 public class SimpleTextComponent {
     private EditText field;
     private boolean decimal;
-    private Consumer<Float> onChangeMethod;
-    private Float previousValue = null;
+    private Float from, to;
 
-    public SimpleTextComponent() {
-    }
+    private Consumer<Float> onChangeMethod;
+    private Consumer<Float> onFocusChangeMethod;
+    private Float previousValue = null;
 
     public SimpleTextComponent setView(EditText field) {
         this.field = field;
 
         field.addTextChangedListener(onSimpleFieldChange());
+        field.setOnFocusChangeListener((v, hasFocus) -> {
+            // Cuando se saca el foco, cambio el numero si corresponde
+            if (!hasFocus) {
+                Float number = Float.parseFloat(SimpleTextComponent.this.field.getText().toString());
+                boolean limit = false;
+                if (from != null && number < from) {
+                    limit = true;
+                    number = from;
+                }
+                if (to != null && number > to) {
+                    limit = true;
+                    number = to;
+                }
+                if (limit) {
+                    SimpleTextComponent.this.field.setText(
+                            decimal ? String.format("%f", number) : String.valueOf(number.intValue())
+                    );
+                }
+                if (onFocusChangeMethod != null)
+                    onFocusChangeMethod.accept(number);
+            }
+        });
         return this;
     }
 
-    public SimpleTextComponent(Boolean decimal) {
+    public SimpleTextComponent(Boolean decimal, Float from, Float to) {
         this.decimal = decimal;
+        this.from = from;
+        this.to = to;
     }
 
     public void update(Float number) {
@@ -36,6 +60,10 @@ public class SimpleTextComponent {
 
     public void onChange(Consumer<Float> method) {
         this.onChangeMethod = method;
+    }
+
+    public void onFocusChange(Consumer<Float> method) {
+        this.onFocusChangeMethod = method;
     }
 
     private TextWatcher onSimpleFieldChange() {
@@ -51,7 +79,15 @@ public class SimpleTextComponent {
                 try {
                     Float number = Float.parseFloat(s.toString());
                     if (!number.equals(previousValue)) {
-                        onChangeMethod.accept(number);
+                        // No se procesa el valor si se va de margenes
+                        if (from != null && number < from) {
+                            return;
+                        }
+                        if (to != null && number > to) {
+                            return;
+                        }
+                        if (onChangeMethod != null)
+                            onChangeMethod.accept(number);
                         previousValue = number;
                     }
                 } catch (Exception e) {

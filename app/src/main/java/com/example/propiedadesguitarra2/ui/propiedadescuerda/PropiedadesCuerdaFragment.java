@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -21,22 +22,25 @@ import com.example.propiedadesguitarra2.StateManager;
 import com.example.propiedadesguitarra2.components.NumberComponent;
 import com.example.propiedadesguitarra2.components.SimpleTextComponent;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class PropiedadesCuerdaFragment extends Fragment {
 
     private Switch todasSwitch;
-    private NumberComponent friccionPorCuerda = new NumberComponent();
-    private NumberComponent frecuenciaPorCuerda = new NumberComponent();
-    private NumberComponent anchoPuntas = new NumberComponent();
-    private NumberComponent maxFriccPuntas = new NumberComponent();
+    private NumberComponent friccionPorCuerda = new NumberComponent(0f, 1f);
+    private NumberComponent frecuenciaPorCuerda = new NumberComponent(0f, null);
+    private NumberComponent anchoPuntas = new NumberComponent(0f, null);
+    private NumberComponent maxFriccPuntas = new NumberComponent(0f, 1f);
     private Spinner cuerda;
     private StateManager stateManager;
-    private SimpleTextComponent nodosText = new SimpleTextComponent(false);
-    private SimpleTextComponent diapasonText = new SimpleTextComponent(true);
-    private SimpleTextComponent trasteText = new SimpleTextComponent(true);
+    private SimpleTextComponent nodosText = new SimpleTextComponent(false, 0f, null);
+    private SimpleTextComponent diapasonText = new SimpleTextComponent(true, null, 0f);
+    private SimpleTextComponent trasteText = new SimpleTextComponent(true, null, 0f);
+    private Spinner cuerdas;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +74,16 @@ public class PropiedadesCuerdaFragment extends Fragment {
         todasSwitch = (Switch) getView().findViewById(R.id.todasSwitch);
 
         // Configuro propiedades
+
+        // Cuerdas
+        cuerdas = (Spinner) getView().findViewById(R.id.cuerdaSpi);
+        List<String> cuerdasTexto = new ArrayList<>();
+        for (int i=1; i <= stateManager.state.cantCuerdas; ++i) {
+            cuerdasTexto.add(String.valueOf(i));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, cuerdasTexto);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        cuerdas.setAdapter(adapter);
 
         // Friccion
         this.friccionPorCuerda.setView(

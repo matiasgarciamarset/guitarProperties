@@ -20,6 +20,7 @@ public class MetaAlgorithms {
                 defineMassByNode.accept(state);
                 break;
             case "nodos":
+            case "cantCuerdas":
                 defineMassByNode.accept(state);
                 frictionWithoutFinger.accept(state);
                 minAndFrets.accept(state);
@@ -51,7 +52,7 @@ public class MetaAlgorithms {
             case "distanciaCuerdaTraste":
                 minAndFrets.accept(state);
                 break;
-             default:
+            default:
                  return false;
         }
         return true;

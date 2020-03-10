@@ -1,4 +1,4 @@
-package com.example.propiedadesguitarra2;
+package com.example.propiedadesguitarra2.components;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

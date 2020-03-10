@@ -14,7 +14,14 @@ public class NumberComponent {
     private Float realFactor;
     private Float previousValue = null;
 
+    private Float from, to;
+
     private Consumer<Float> onChange = null;
+
+    public NumberComponent(Float from, Float to) {
+        this.from = from;
+        this.to = to;
+    }
 
     public void setView(EditText numeroEditBox, EditText factor, SeekBar numeroBar) {
         this.numeroEditBox = numeroEditBox;
@@ -36,12 +43,35 @@ public class NumberComponent {
                 if (onChange != null && NumberComponent.this.numeroEditBox.getText().length() > 0 &&
                         !NumberComponent.this.numeroEditBox.getText().equals("-")) {
                     Float number = Float.parseFloat(NumberComponent.this.numeroEditBox.getText().toString());
+                    if (from != null && number < from)
+                        return;
+                    if (to != null && number > to)
+                        return;
                     if (!number.equals(previousValue)) {
                         onChange.accept(number);
                         previousValue = number;
                     }
                 }
 
+            }
+        });
+
+        this.numeroEditBox.setOnFocusChangeListener((v, hasFocus) -> {
+            // Cuando se saca el foco, cambio el numero si corresponde
+            if (!hasFocus) {
+                Float number = Float.parseFloat(NumberComponent.this.numeroEditBox.getText().toString());
+                boolean limit = false;
+                if (from != null && number < from) {
+                    limit = true;
+                    number = from;
+                }
+                if (to != null && number > to) {
+                    limit = true;
+                    number = to;
+                }
+                if (limit) {
+                    NumberComponent.this.numeroEditBox.setText(String.format("%f", number));
+                }
             }
         });
 
@@ -58,7 +88,33 @@ public class NumberComponent {
 
             @Override
             public void afterTextChanged(Editable s) {
-                NumberComponent.this.realFactor = getValueOrCero(s.toString());
+                Float number = getValueOrCero(s.toString());
+                if (from != null && number < from) {
+                    return;
+                }
+                if (to != null && number > to) {
+                    return;
+                }
+                NumberComponent.this.realFactor = number;
+            }
+        });
+
+        this.factor.setOnFocusChangeListener((v, hasFocus) -> {
+            // Cuando se saca el foco, cambio el numero si corresponde
+            if (!hasFocus) {
+                Float number = Float.parseFloat(NumberComponent.this.factor.getText().toString());
+                boolean limit = false;
+                if (from != null && number < from) {
+                    limit = true;
+                    number = from;
+                }
+                if (to != null && number > to) {
+                    limit = true;
+                    number = to;
+                }
+                if (limit) {
+                    NumberComponent.this.factor.setText(String.format("%f", number));
+                }
             }
         });
 
@@ -89,7 +145,20 @@ public class NumberComponent {
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (from != null && from > value) {
+                    value = from;
+                    prev_value = 0;
+                    seekBar.setProgress(0);
+                    NumberComponent.this.numeroEditBox.setText(String.format("%f", from));
+                }
+                if (to != null && to < value) {
+                    value = to;
+                    prev_value = 100;
+                    seekBar.setProgress(100);
+                    NumberComponent.this.numeroEditBox.setText(String.format("%f", to));
+                }
+            }
         });
     }
 

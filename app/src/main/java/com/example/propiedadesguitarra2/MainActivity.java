@@ -3,14 +3,10 @@ package com.example.propiedadesguitarra2;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.propiedadesguitarra2.components.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
