@@ -114,15 +114,21 @@ public class BluetoothService {
     }
 
     public Boolean write(byte[] out) {
-        // Create temporary object
-        ConnectedThread r;
-        // Synchronize a copy of the ConnectedThread
-        synchronized (this) {
-         if (mState != 3) return false;
-         r = mConnectedThread;
+        try {
+            // Create temporary object
+            ConnectedThread r;
+            // Synchronize a copy of the ConnectedThread
+            synchronized (this) {
+                if (mState != 3) return false;
+                r = mConnectedThread;
+            }
+            // Perform the write unsynchronized
+            return r.write(out);
+        } catch (Exception e) {
+            mState = STATE_NONE;
+            publicStatusChange("error", e.getMessage());
+            return false;
         }
-        // Perform the write unsynchronized
-        return r.write(out);
     }
 
     /**
@@ -130,7 +136,8 @@ public class BluetoothService {
      *
      * @param socket The BluetoothSocket on which the connection was made
      */
-    private synchronized void connected(BluetoothSocket socket, int buffer_size) {
+    private synchronized void connected(BluetoothSocket socket, BluetoothDevice
+            device, int buffer_size) {
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {
             mConnectThread.cancel();
@@ -146,6 +153,8 @@ public class BluetoothService {
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(socket, buffer_size);
         mConnectedThread.start();
+
+        publicStatusChange("device", device.getName());
     }
 
     /**
@@ -209,6 +218,8 @@ public class BluetoothService {
                 }
                 return true;
             } catch (IOException e) {
+                mState = STATE_NONE;
+                publicStatusChange("error", e.getMessage());
                 return false;
             }
         }
@@ -251,7 +262,6 @@ public class BluetoothService {
             }
             mmSocket = tmp;
             mState = STATE_CONNECTING;
-            publicStatusChange("device", device.getName());
         }
 
         public void run() {
@@ -283,7 +293,7 @@ public class BluetoothService {
             }
 
             // Start the connected thread
-            connected(mmSocket, buffer_size);
+            connected(mmSocket, mmDevice, buffer_size);
         }
 
         public void cancel() {

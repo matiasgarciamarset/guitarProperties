@@ -40,12 +40,6 @@
                 android:layout_marginRight="20dp"
                 android:text="Bluetooth" />
 
-            <TextView
-                android:id="@+id/bluetoothView"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:text="Desconectado" />
-
         </LinearLayout>
 
         <View

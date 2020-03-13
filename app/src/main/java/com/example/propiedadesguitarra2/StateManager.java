@@ -20,6 +20,8 @@ public class StateManager {
     private BluetoothService bService;
     private MetaAlgorithms metaAlgorithms;
 
+    private Handler bt_handler;
+
     public static synchronized StateManager get(Context context) {
         if (stateManager == null)
             stateManager = new StateManager(context);
@@ -124,8 +126,14 @@ public class StateManager {
         return true;
     }
 
-    public void connectBluetooth(BluetoothDevice device, Handler method) {
+    public void connectBluetooth(BluetoothDevice device) {
         bService.connect(device, state.btBufferSize.intValue());
-        bService.onConnectionStatusChange(method);
+        // Sincronizo toda la informacion al establecer conexion
+        sendAllByBluetooth();
+    }
+
+    public void setBtHandler(Handler handler) {
+        this.bt_handler = handler;
+        bService.onConnectionStatusChange(bt_handler);
     }
 }

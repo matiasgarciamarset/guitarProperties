@@ -103,7 +103,7 @@ public class StateFormater {
                     .append("<br/><br/>"));
             return result.append("}").toString();
         };
-        return "<li><div><b>cuerdas</b>: [" +
+        return "<li><div><b>cuerdas</b>: (size=" + cuerdas.size() + ") [" +
                 cuerdas.values().stream()
                         .map(printCuerda)
                         .collect(Collectors.joining(",<br/><br/>"))
@@ -111,8 +111,9 @@ public class StateFormater {
     }
 
     private static String printValue(String variableName, Float[] list) {
-        if (list == null || list.length == 0) return null;
-        return "<li>&nbsp;<b>" +variableName + "</b> <br/><br/> &nbsp;[" +
+        if (list == null || list.length == 0)
+            return "<li>&nbsp;<b>" +variableName + "</b> <br/><br/> No hay valores</li>";
+        return "<li>&nbsp;<b>" +variableName + "</b> &nbsp; (size=" + list.length + ") &nbsp; <br/><br/> &nbsp;[" +
                 Arrays.stream(list)
                         .map(NumberConverter::serialize)
                         .collect(Collectors.joining(", "))

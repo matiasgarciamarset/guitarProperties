@@ -10,8 +10,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +19,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import com.example.propiedadesguitarra2.R;
 import com.example.propiedadesguitarra2.StateManager;
@@ -44,7 +41,6 @@ public class CargarGuardarFragment extends Fragment {
 
     private BluetoothAdapter mBluetoothAdapter;
     private Button bluetoothButton;
-    private TextView bluetoothView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -61,11 +57,10 @@ public class CargarGuardarFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         bluetoothButton = (Button) getView().findViewById(R.id.bluetoothButton);
-        bluetoothView = (TextView) getView().findViewById(R.id.bluetoothView);
 
         bluetoothButton.setOnClickListener(v -> {
             if (mBluetoothAdapter == null) {
-                bluetoothView.setText(R.string.bluetooth_no_available);
+                Toast.makeText(this.getContext(), R.string.bluetooth_no_available, Toast.LENGTH_SHORT).show();
                 return;
             }
             // If BT is not on, request that it be enabled.
@@ -167,26 +162,6 @@ public class CargarGuardarFragment extends Fragment {
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
-        stateManager.connectBluetooth(device, handler);
+        stateManager.connectBluetooth(device);
     }
-
-    private final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-        FragmentActivity activity = getActivity();
-         if (msg.what == BluetoothService.CONNECTION_STATUS) {
-             switch (msg.arg1) {
-                 case 3:
-                     bluetoothView.setText(getString(R.string.bt_connected) + msg.getData().getString("device"));
-                     break;
-                 case 2:
-                     bluetoothView.setText(R.string.bt_connecting);
-                     break;
-                 case 0:
-                     bluetoothView.setText(getString(R.string.bt_error) + msg.getData().getString("error"));
-                     break;
-             }
-         }
-        }
-    };
 }

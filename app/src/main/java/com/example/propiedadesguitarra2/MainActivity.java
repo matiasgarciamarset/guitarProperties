@@ -1,18 +1,25 @@
 package com.example.propiedadesguitarra2;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.propiedadesguitarra2.components.ViewPagerAdapter;
+import com.example.propiedadesguitarra2.ui.cargarguardar.BluetoothService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private StateManager stateManager;
     private MenuItem prevMenuItem;
+    private View viewBt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +71,32 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {}
         });
 
+        View viewBt = (View) findViewById(R.id.bt_view);
+
         // Creo StateManager para utlizar en toda la APP
-        stateManager = StateManager.get(this);
+        StateManager.get(this).setBtHandler(new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == BluetoothService.CONNECTION_STATUS) {
+                    switch (msg.arg1) {
+                        case 3:
+                            viewBt.setBackgroundColor(Color.GREEN);
+                            Toast.makeText(getBaseContext(), "Conectado", Toast.LENGTH_SHORT).show();
+                            break;
+                        case 2:
+                            viewBt.setBackgroundColor(Color.BLUE);
+                            Toast.makeText(getBaseContext(), "Conectando..", Toast.LENGTH_SHORT).show();
+                            break;
+                        case 0:
+                            viewBt.setBackgroundColor(Color.RED);
+                            String text = msg.getData().getString("error");
+                            if (text != null)
+                                Toast.makeText(getBaseContext(), "Error: " + text, Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
+            }
+        });
     }
+
 }
