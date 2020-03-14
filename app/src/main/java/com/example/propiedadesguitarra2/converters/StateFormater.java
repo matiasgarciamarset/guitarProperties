@@ -44,27 +44,27 @@ public class StateFormater {
 
     public static String compressAll(State state) {
         return
-                generateValue("nFrames", state.nFrames) + "," +
-                generateValue("samplerate", state.samplerate) + "," +
-                generateValue("nbufferii", state.nbufferii) + "," +
-                generateValue("canalesEntrada", state.canalesEntrada) + "," +
-                generateValue("npot", state.npot) + "," +
-                generateValue("dedoSize", state.dedoSize) + "," +
-                generateValue("softrealtimeRefresh", state.softrealtimeRefresh) + "," +
-                generateValue("debugMode", state.debugMode) + "," +
-                generateValue("imprimir", state.imprimir) + "," +
-                generateValue("escalaIntensidad", state.escalaIntensidad) + "," +
-                generateValue("distanciaEquilibrioResorte", state.distanciaEquilibrioResorte) + "," +
-                generateValue("distanciaEntreNodos", state.distanciaEntreNodos) + "," +
-                generateValue("centro", state.centro) + "," +
-                generateValue("maxp", state.maxp) + "," +
-                generateValue("expp", state.expp) + "," +
-                generateValue("ordenMasa", state.ordenMasa) + "," +
-                generateValue("masaPorNodo", state.masaPorNodo) + "," +
-                generateValue("friccionSinDedo", state.friccionSinDedo) + "," +
-                generateValue("friccionConDedo", state.friccionConDedo) + "," +
-                generateValue("minimosYtrastes", state.minimosYtrastes)+ "," +
-                generateValue("cantCuerdas", state.cantCuerdas);
+                generateValue("imprimir", state.imprimir) +
+                generateValue("nFrames", state.nFrames) +
+                generateValue("samplerate", state.samplerate) +
+                generateValue("nbufferii", state.nbufferii) +
+                generateValue("canalesEntrada", state.canalesEntrada) +
+                generateValue("npot", state.npot) +
+                generateValue("dedoSize", state.dedoSize) +
+                generateValue("softrealtimeRefresh", state.softrealtimeRefresh) +
+                generateValue("debugMode", state.debugMode) +
+                generateValue("escalaIntensidad", state.escalaIntensidad) +
+                generateValue("distanciaEquilibrioResorte", state.distanciaEquilibrioResorte) +
+                generateValue("distanciaEntreNodos", state.distanciaEntreNodos) +
+                generateValue("centro", state.centro) +
+                generateValue("maxp", state.maxp) +
+                generateValue("expp", state.expp) +
+                generateValue("ordenMasa", state.ordenMasa) +
+                generateValue("cantCuerdas", state.cantCuerdas) +
+                generateValue("masaPorNodo", state.masaPorNodo) +
+                generateValue("friccionSinDedo", state.friccionSinDedo) +
+                generateValue("friccionConDedo", state.friccionConDedo) +
+                generateValue("minimosYtrastes", state.minimosYtrastes);
     }
 
     public static Spanned prettyPrint(State state) {

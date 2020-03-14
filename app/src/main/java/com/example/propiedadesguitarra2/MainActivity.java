@@ -82,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
                         case 3:
                             viewBt.setBackgroundColor(Color.GREEN);
                             Toast.makeText(getBaseContext(), "Conectado", Toast.LENGTH_SHORT).show();
+                            // Sincronizo toda la informacion al establecer conexion
+                            StateManager.get(getBaseContext()).sendAllByBluetooth();
+                            Toast.makeText(getBaseContext(), "Sincronizado", Toast.LENGTH_SHORT).show();
                             break;
                         case 2:
                             viewBt.setBackgroundColor(Color.BLUE);

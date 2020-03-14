@@ -128,8 +128,6 @@ public class StateManager {
 
     public void connectBluetooth(BluetoothDevice device) {
         bService.connect(device, state.btBufferSize.intValue());
-        // Sincronizo toda la informacion al establecer conexion
-        sendAllByBluetooth();
     }
 
     public void setBtHandler(Handler handler) {
