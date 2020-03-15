@@ -6,6 +6,7 @@ import android.text.Spanned;
 import com.example.propiedadesguitarra2.model.State;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -40,6 +41,13 @@ public class StateFormater {
         numberAssignator.put("friccionConDedo", "18");
         numberAssignator.put("minimosYtrastes", "19");
         numberAssignator.put("cantCuerdas", "20");
+        numberAssignator.put("nodos", "21");
+        numberAssignator.put("frecuencia", "22");
+        numberAssignator.put("maxFriccionEnPunta", "23");
+        numberAssignator.put("anchoPuntas", "24");
+        numberAssignator.put("distanciaCuerdaDiapason", "25");
+        numberAssignator.put("distanciaCuerdaTraste", "26");
+        numberAssignator.put("friccion", "27");
     }
 
     public static String compressAll(State state) {
@@ -64,7 +72,8 @@ public class StateFormater {
                 generateValue("masaPorNodo", state.masaPorNodo) +
                 generateValue("friccionSinDedo", state.friccionSinDedo) +
                 generateValue("friccionConDedo", state.friccionConDedo) +
-                generateValue("minimosYtrastes", state.minimosYtrastes);
+                generateValue("minimosYtrastes", state.minimosYtrastes) +
+                generateValue(state.cuerdas);
     }
 
     public static Spanned prettyPrint(State state) {
@@ -150,5 +159,32 @@ public class StateFormater {
         if (!numberAssignator.containsKey(variableName))
             return null;
         return START_CHARACTER + numberAssignator.get(variableName) + ":" + (value ? "1" : "0") + END_CHARACTER;
+    }
+
+    private static String generateValue(Map<Integer, Map<String, Float>> cuerdas) {
+        if (cuerdas.size() <= 0) return "";
+
+        StringBuffer buff = new StringBuffer(START_CHARACTER);
+        Map<String, StringBuffer> valuesToSend = new HashMap<>();
+        // Es importante mantener el orden
+        cuerdas.get(0).keySet().forEach(k -> {
+            valuesToSend.put(k, new StringBuffer(START_CHARACTER + numberAssignator.get(k) + ":["));
+        });
+        for (int i=0; i <cuerdas.size(); ++i) {
+            if (i==0) {
+                cuerdas.get(i).forEach((k,v) -> valuesToSend.get(k)
+                        .append(NumberConverter.serialize(v)));
+            } else {
+                cuerdas.get(i).forEach((k,v) -> valuesToSend.get(k)
+                        .append(",")
+                        .append(NumberConverter.serialize(v)));
+            }
+        }
+        cuerdas.get(0).keySet().forEach(k -> {
+            valuesToSend.get(k).append("]"+END_CHARACTER);
+        });
+        return valuesToSend.values()
+                .stream()
+                .collect(Collectors.joining());
     }
 }
