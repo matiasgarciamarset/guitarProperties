@@ -44,6 +44,9 @@ public class State implements Serializable {
 
     public Map<Integer, Map<String, Float>> cuerdas = new HashMap<>();
 
+    // Solo para uso interno ->
+    public boolean automaticSync = true;
+
 
     public State() {
         // Configuracion por default

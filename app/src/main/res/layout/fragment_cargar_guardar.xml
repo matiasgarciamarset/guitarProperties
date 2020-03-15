@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,6 +22,13 @@
             android:text="Conecte la aplicacion con la guitarra. Tenga en cuenta que si no esta conectado a la misma, ninguna configuracion se vera aplicada." />
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="center"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,6 +44,22 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
                 android:text="Bluetooth" />
+
+            <Switch
+                android:id="@+id/switchSync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sync automático " />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonSync"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Sincronizar"
+            android:visibility="gone" />
 
         </LinearLayout>
 

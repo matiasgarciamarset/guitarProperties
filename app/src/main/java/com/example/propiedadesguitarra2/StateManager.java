@@ -88,6 +88,9 @@ public class StateManager {
     }
 
     public Boolean sendValueByBluetooth(String variableName, Float value) {
+        if (!state.automaticSync) {
+            return false;
+        }
         // Chequeo que el servicio este conectado
         if (bService.getState() != 3) {
             return false;
@@ -127,6 +130,9 @@ public class StateManager {
     }
 
     public Boolean sendValueByBluetooth(String variableName, Boolean value) {
+        if (!state.automaticSync) {
+            return false;
+        }
         String content = StateFormater.generateValue(variableName, value);
         if (state.imprimir) System.out.println(content);
         if (content != null) bService.write(content.getBytes());

@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -133,6 +134,24 @@ public class CargarGuardarFragment extends Fragment {
             builder.setMessage(message).setPositiveButton(R.string.yes, dialogClickListener)
                     .setNegativeButton(R.string.no, dialogClickListener).show();
         });
+
+        Button syncButton = (Button) getView().findViewById(R.id.buttonSync);
+        syncButton.setOnClickListener(v -> {
+            if (stateManager.sendAllByBluetooth()) {
+                Toast.makeText(getContext(), "Sincronizado", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Switch sync = (Switch) getView().findViewById(R.id.switchSync);
+        sync.setChecked(stateManager.state.automaticSync);
+        sync.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            stateManager.state.automaticSync = isChecked;
+            syncButton.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+        });
+
+        syncButton.setVisibility(stateManager.state.automaticSync ? View.GONE : View.VISIBLE);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
