@@ -29,8 +29,6 @@ public class ConfiguracionesFragment extends Fragment {
     private SimpleTextComponent dedoSizeText = new SimpleTextComponent(false, 0f, null);
     private SimpleTextComponent softrealtimeRefreshText = new SimpleTextComponent(false, 0f, null);
     private SimpleTextComponent btBufferSizeText =  new SimpleTextComponent(false, 0f, null);
-    private Switch debugModeSwitch;
-    private Switch imprimirSwitch;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,8 +50,6 @@ public class ConfiguracionesFragment extends Fragment {
         npotText.setView((EditText) getView().findViewById(R.id.npotText));
         dedoSizeText.setView((EditText) getView().findViewById(R.id.dedoSizeText));
         softrealtimeRefreshText.setView((EditText) getView().findViewById(R.id.softrealtimeRefreshText));
-        debugModeSwitch = (Switch) getView().findViewById(R.id.debugModeSwitch);
-        imprimirSwitch = (Switch) getView().findViewById(R.id.imprimirSwitch);
         btBufferSizeText.setView((EditText) getView().findViewById(R.id.btBufferSizeText));
 
         // Guardo cambios en State
@@ -65,8 +61,6 @@ public class ConfiguracionesFragment extends Fragment {
         npotText.onChange(v -> stateManager.state.npot = v);
         dedoSizeText.onChange(v -> stateManager.state.dedoSize = v);
         softrealtimeRefreshText.onChange(v -> stateManager.state.softrealtimeRefresh = v);
-        debugModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.debugMode = isChecked);
-        imprimirSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> stateManager.state.imprimir = isChecked);
         btBufferSizeText.onChange(v -> stateManager.state.btBufferSize = v);
 
         // Cargo cambios
@@ -77,8 +71,6 @@ public class ConfiguracionesFragment extends Fragment {
         npotText.update(stateManager.state.npot);
         dedoSizeText.update(stateManager.state.dedoSize);
         softrealtimeRefreshText.update(stateManager.state.softrealtimeRefresh);
-        debugModeSwitch.setChecked(stateManager.state.debugMode);
-        imprimirSwitch.setChecked(stateManager.state.imprimir);
         btBufferSizeText.update(stateManager.state.btBufferSize);
     }
 }

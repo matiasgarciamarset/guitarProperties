@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import com.example.propiedadesguitarra2.R;
 import com.example.propiedadesguitarra2.StateManager;
@@ -27,6 +28,8 @@ public class PropiedadesFragment extends Fragment {
     private SimpleTextComponent exppText = new SimpleTextComponent(true, 0f, null);
     private SimpleTextComponent ordenMasaText = new SimpleTextComponent(true, 0f, .5f);
     private SimpleTextComponent cantCuerdas =  new SimpleTextComponent(false, 0f, 50f);
+    private Switch debugModeSwitch;
+    private Switch imprimirSwitch;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -104,6 +107,18 @@ public class PropiedadesFragment extends Fragment {
             stateManager.sendValueByBluetooth("cantCuerdas", v);
         });
 
+        debugModeSwitch = (Switch) getView().findViewById(R.id.debugModeSwitch);
+        debugModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            stateManager.state.debugMode = isChecked;
+            stateManager.sendValueByBluetooth("debugMode", isChecked);
+        });
+
+        imprimirSwitch = (Switch) getView().findViewById(R.id.imprimirSwitch);
+        imprimirSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            stateManager.state.imprimir = isChecked;
+            stateManager.sendValueByBluetooth("imprimir", isChecked);
+        });
+
         updateAll();
     }
 
@@ -116,5 +131,7 @@ public class PropiedadesFragment extends Fragment {
         exppText.update(stateManager.state.expp);
         ordenMasaText.update(stateManager.state.ordenMasa);
         cantCuerdas.update(stateManager.state.cantCuerdas);
+        debugModeSwitch.setChecked(stateManager.state.debugMode);
+        imprimirSwitch.setChecked(stateManager.state.imprimir);
     }
 }

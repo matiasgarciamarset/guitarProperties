@@ -120,7 +120,15 @@ public class StateManager {
 
         // Envio variable
         String content = StateFormater.generateValue(variableName, value);
-        System.out.println(content);
+        if (state.imprimir) System.out.println(content);
+        if (content != null) bService.write(content.getBytes());
+
+        return true;
+    }
+
+    public Boolean sendValueByBluetooth(String variableName, Boolean value) {
+        String content = StateFormater.generateValue(variableName, value);
+        if (state.imprimir) System.out.println(content);
         if (content != null) bService.write(content.getBytes());
 
         return true;
