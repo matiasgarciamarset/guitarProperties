@@ -13,18 +13,19 @@ import com.example.propiedadesguitarra2.ui.cargarguardar.BluetoothService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
     private MenuItem prevMenuItem;
     private View viewBt;
+    private StateManager stateManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        stateManager = StateManager.get(getBaseContext());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -72,9 +73,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         View viewBt = (View) findViewById(R.id.bt_view);
+        viewBt.setBackgroundColor(stateManager.isConnectedBT() ? Color.GREEN : Color.RED);
 
         // Creo StateManager para utlizar en toda la APP
-        StateManager.get(this).setBtHandler(new Handler() {
+        stateManager.setBtHandler(new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 if (msg.what == BluetoothService.CONNECTION_STATUS) {
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                             viewBt.setBackgroundColor(Color.GREEN);
                             Toast.makeText(getBaseContext(), "Conectado", Toast.LENGTH_SHORT).show();
                             // Sincronizo toda la informacion al establecer conexion
-                            StateManager.get(getBaseContext()).sendAllByBluetooth();
+                            stateManager.sendAllByBluetooth();
                             Toast.makeText(getBaseContext(), "Sincronizado", Toast.LENGTH_SHORT).show();
                             break;
                         case 2:

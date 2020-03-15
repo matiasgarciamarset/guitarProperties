@@ -148,4 +148,8 @@ public class StateManager {
         this.bt_handler = handler;
         bService.onConnectionStatusChange(bt_handler);
     }
+
+    public boolean isConnectedBT() {
+        return bService.getState() == 3;
+    }
 }
