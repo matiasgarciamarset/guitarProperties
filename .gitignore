@@ -1,6 +1,7 @@
 .idea/
 app/._.gitignore
 app/._src
+app/.cxx
 app/src/._androidTest
 app/src/._main
 app/src/._test

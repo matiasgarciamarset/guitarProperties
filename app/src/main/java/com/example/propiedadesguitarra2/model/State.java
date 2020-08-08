@@ -18,7 +18,7 @@ public class State implements Serializable {
     public Float canalesEntrada = 2f; // > 0
     public Float npot = 2048f; // Tamaño tabla energia potencial > 0
     public Float dedoSize = 64f; // > 0
-    public Float softrealtimeRefresh = 200f; // > 0
+    public Float palanca = 1f; // > 0
     public Boolean debugMode = false;
     public Boolean imprimir = true;
     public Float btBufferSize = 2048f; // > 0

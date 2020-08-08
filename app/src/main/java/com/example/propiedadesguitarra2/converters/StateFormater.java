@@ -26,7 +26,7 @@ public class StateFormater {
         numberAssignator.put("canalesEntrada", "3");
         numberAssignator.put("npot", "4");
         numberAssignator.put("dedoSize", "5");
-        numberAssignator.put("softrealtimeRefresh", "6");
+        numberAssignator.put("palanca", "6");
         numberAssignator.put("debugMode", "7");
         numberAssignator.put("imprimir", "8");
         numberAssignator.put("escalaIntensidad", "9");
@@ -59,7 +59,7 @@ public class StateFormater {
                 generateValue("canalesEntrada", state.canalesEntrada) +
                 generateValue("npot", state.npot) +
                 generateValue("dedoSize", state.dedoSize) +
-                generateValue("softrealtimeRefresh", state.softrealtimeRefresh) +
+                generateValue("palanca", state.palanca) +
                 generateValue("debugMode", state.debugMode) +
                 generateValue("escalaIntensidad", state.escalaIntensidad) +
                 generateValue("distanciaEquilibrioResorte", state.distanciaEquilibrioResorte) +
@@ -85,7 +85,7 @@ public class StateFormater {
                 printValue("canalesEntrada", state.canalesEntrada) + "\n" +
                 printValue("npot", state.npot) + "\n" +
                 printValue("dedoSize", state.dedoSize) + "\n" +
-                printValue("softrealtimeRefresh", state.softrealtimeRefresh) + "\n" +
+                printValue("palanca", state.palanca) + "\n" +
                 printValue("debugMode", state.debugMode) + "\n" +
                 printValue("imprimir", state.imprimir) + "\n" +
                 printValue("escalaIntensidad", state.escalaIntensidad) + "\n" +

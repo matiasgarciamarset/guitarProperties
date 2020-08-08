@@ -2,13 +2,21 @@ package com.example.propiedadesguitarra2;
 
 import com.example.propiedadesguitarra2.model.State;
 
-import java.util.function.Consumer;
-
 public class MetaAlgorithms {
 
     Integer cantMaximaNodos = -1;
     Integer[] nodos;
     Integer sumNodos = 0;
+
+    static {
+        System.loadLibrary("util-lib");
+    }
+
+    native float rand();
+    static native float calcularMasa(float frecuencia, int nodos);
+    static native float calcularFactor(float maxFriccPunta, float fricc, float orden, int ultimo, int pos);
+    static native float calcularFriccion(float maxp, float expp, float centro, int fi);
+    static native int calcularNodoTraste(int nodos, int pos);
 
     /*
      * Recalcula la matriz correspondiente dependiendo del valor editado
@@ -17,40 +25,40 @@ public class MetaAlgorithms {
         initDefaults(state);
         switch (attributeName) {
             case "frecuencia":
-                defineMassByNode.accept(state);
+                defineMassByNode(state);
                 break;
             case "nodos":
             case "cantCuerdas":
-                defineMassByNode.accept(state);
-                frictionWithoutFinger.accept(state);
-                minAndFrets.accept(state);
+                defineMassByNode(state);
+                frictionWithoutFinger(state);
+                minAndFrets(state);
                 break;
             case "ordenMasa":
-                defineMassByNode.accept(state);
+                defineMassByNode(state);
                 break;
             case "anchoPuntas":
-                frictionWithoutFinger.accept(state);
+                frictionWithoutFinger(state);
                 break;
             case "friccion":
-                frictionWithoutFinger.accept(state);
+                frictionWithoutFinger(state);
                 break;
             case "maxFriccionEnPunta":
-                frictionWithoutFinger.accept(state);
+                frictionWithoutFinger(state);
                 break;
             case "dedoSize":
-                frictionWithFinger.accept(state);
+                frictionWithFinger(state);
                 break;
             case "maxp":
-                frictionWithFinger.accept(state);
+                frictionWithFinger(state);
                 break;
             case "expp":
-                frictionWithFinger.accept(state);
+                frictionWithFinger(state);
                 break;
             case "distanciaCuerdaDiapason":
-                minAndFrets.accept(state);
+                minAndFrets(state);
                 break;
             case "distanciaCuerdaTraste":
-                minAndFrets.accept(state);
+                minAndFrets(state);
                 break;
             default:
                  return false;
@@ -58,35 +66,34 @@ public class MetaAlgorithms {
         return true;
     }
 
-    private Consumer<State> defineMassByNode = state -> {
+    private void defineMassByNode(State state) {
         Float[] masaPorNodo = new Float[sumNodos];
+
         int v = 0;
-        float numeroMagico = 335.52f;
-        Float ordenMasa = state.ordenMasa;
+        float ordenMasa = state.ordenMasa;
 
         for (int i = 0; i < state.cuerdas.size(); i++) {
-            Float frecuencia = state.cuerdas.get(i).get("frecuencia");
-            Double masa = Math.pow(((frecuencia * nodos[i]) / (numeroMagico * 512)), 2);
+            float masa =
+               calcularMasa(state.cuerdas.get(i).get("frecuencia"), nodos[i]);
 
-            if (masa >= .9) {
+            if (masa > .9f) {
                 System.out.println("El valor de masa se va de lo permitido, reseteando a 0.9");
-                masa = .9;
+                masa = .9f;
             }
 
-            Float ordenXmasa = ordenMasa * masa.floatValue();
+            float ordenXmasa = ordenMasa * masa;
             for (int j = 0; j < nodos[i]; ++j) {
-                Double result = masa - (1.0 - Math.random()) * ordenXmasa;
-                masaPorNodo[v] = result.floatValue();
+                masaPorNodo[v] = masa - (1f - rand()) * ordenXmasa;
                 v++;
             }
         }
 
         state.masaPorNodo = masaPorNodo;
         state.masaPorNodoEdited = true;
-    };
+    }
 
     // USA: nodos, anchoPuntas, friccion, maxFriccionEnPunta
-    private Consumer<State> frictionWithoutFinger = state ->  {
+    private void frictionWithoutFinger(State state) {
         Float[] friccionSinDedo = new Float[sumNodos];
         int v = 0;
 
@@ -94,19 +101,19 @@ public class MetaAlgorithms {
             Integer ultimo = nodos[j].intValue();
 
             Float orden = state.cuerdas.get(j).get("anchoPuntas");
-            Float fricc = state.cuerdas.get(j).get(("friccion"));
-            Float maxFriccionEnPunta = state.cuerdas.get(j).get(("maxFriccionEnPunta"));
+            Float fricc = state.cuerdas.get(j).get("friccion");
+            Float maxFriccionEnPunta = state.cuerdas.get(j).get("maxFriccionEnPunta");
+
             for (int i = 0; i < ultimo; ++i) {
 
-                Double factor =
-                        (maxFriccionEnPunta - fricc) *
-                                (Math.exp(-orden * (i) * (i)) + Math.exp(-orden * (i - ultimo) * (i - ultimo)));
+                float factor = calcularFactor(maxFriccionEnPunta, fricc, orden, ultimo, i);
+                float suma = factor + fricc;
 
-                if (factor + fricc > 1.) {
+                if (suma >= 1.) {
                     System.out.println("El factor de la friccion sin dedo se va de lo permitido, reseteando a 0.9");
                     friccionSinDedo[v] = .9f;
                 } else {
-                    friccionSinDedo[v] = factor.floatValue() + fricc;
+                    friccionSinDedo[v] = suma;
                 }
                 v++;
             }
@@ -116,7 +123,7 @@ public class MetaAlgorithms {
     };
 
     // USA: dedoSize, maxp, expp
-    private Consumer<State> frictionWithFinger = state ->  {
+    private void frictionWithFinger(State state) {
         Integer dedoSize = state.dedoSize.intValue();
 
         Float[] friccionConDedo = new Float[dedoSize];
@@ -125,23 +132,24 @@ public class MetaAlgorithms {
         Float expp = state.expp;
         Integer centro = dedoSize / 2;
         for (int i = 0; i < dedoSize; i++) {
-            float fi=i;
-            Double friccion = maxp * Math.exp(-expp * (fi-centro) * (fi-centro));
 
-            if (friccion > .9) {
+            float friccion = calcularFriccion(maxp, expp, centro, i);
+
+            if (friccion > .9f) {
                 System.out.printf("El valor de la friccion con dedo se va de lo permitido, reseteando a 0.9");
-                friccion = 0.9;
+                friccion = .9f;
             }
 
-            friccionConDedo[i] = friccion.floatValue();
+            friccionConDedo[i] = friccion;
         }
         state.friccionConDedo = friccionConDedo;
         state.friccionConDedoEdited = true;
     };
 
     // USA: nodos, distanciaCuerdaDiapason, distanciaCuerdaTraste
-    private Consumer<State> minAndFrets = state ->  {
+    private void minAndFrets(State state) {
         Float[] minimosYtrastes = new Float[state.cuerdas.size() * cantMaximaNodos];
+        Float fdedo = 1 / 1.059463094f;
 
         for (int j = 0; j < state.cuerdas.size(); j++) {
             Float distanciaCuerdaDiapason = state.cuerdas.get(j).get("distanciaCuerdaDiapason");
@@ -154,8 +162,7 @@ public class MetaAlgorithms {
                 }
             }
             for (int i = 0; i < 12; i++) {
-                Double fdedo = 1 / 1.059463094;
-                Integer nodotraste = (int) (nodos[j] * (1.0 - Math.pow(fdedo, i)));
+                Integer nodotraste = calcularNodoTraste(nodos[j], i);
                 minimosYtrastes[nodotraste] = distanciaCuerdaTraste;
             }
         }

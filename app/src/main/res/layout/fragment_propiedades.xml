@@ -206,6 +206,27 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="palanca" />
+
+            <EditText
+                android:id="@+id/palancaText"
+                android:layout_width="165dp"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:inputType="number" />
+
+        </LinearLayout>
+
     </com.example.propiedadesguitarra2.components.AutoGridLayout>
 
 </ScrollView>

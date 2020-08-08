@@ -28,6 +28,7 @@ public class PropiedadesFragment extends Fragment {
     private SimpleTextComponent exppText = new SimpleTextComponent(true, 0f, null);
     private SimpleTextComponent ordenMasaText = new SimpleTextComponent(true, 0f, .5f);
     private SimpleTextComponent cantCuerdas =  new SimpleTextComponent(false, 0f, 50f);
+    private SimpleTextComponent palancaText =  new SimpleTextComponent(false, null, null);
     private Switch debugModeSwitch;
     private Switch imprimirSwitch;
 
@@ -119,6 +120,12 @@ public class PropiedadesFragment extends Fragment {
             stateManager.sendValueByBluetooth("imprimir", isChecked);
         });
 
+        palancaText.setView((EditText) getView().findViewById(R.id.palancaText));
+        palancaText.onChange(v -> {
+            stateManager.state.palanca = v;
+            stateManager.sendValueByBluetooth("palanca", v);
+        });
+
         updateAll();
     }
 
@@ -133,5 +140,6 @@ public class PropiedadesFragment extends Fragment {
         cantCuerdas.update(stateManager.state.cantCuerdas);
         debugModeSwitch.setChecked(stateManager.state.debugMode);
         imprimirSwitch.setChecked(stateManager.state.imprimir);
+        palancaText.update(stateManager.state.palanca);
     }
 }
